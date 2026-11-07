@@ -103,10 +103,14 @@ Details: [`architecture/engines.md`](./architecture/engines.md). Topic packaging
 - Curriculum drift → content as data.  
 - Syllabus lists must be re-validated every phase.
 
+## Web application
+
+Concrete browser architecture, routes, stack, runtime split, and web milestones: [`architecture/web-app.md`](./architecture/web-app.md).
+
 ## Immediate next engineering work
 
-1. Scaffold the monorepo / app shell for the interactive board.  
-2. Implement Phase 1 shared base + chapter manifest format.  
-3. Pick first vertical slice: **Class 10 Quadratic Equations** (maths) and **Class 10 Chemical Reactions and Equations** (chemistry) as reference modules that prove the schema end-to-end.  
+1. Scaffold the Next.js monorepo (`apps/web`) with full-bleed `/board` ink surface.  
+2. Implement Phase 1 shared base + chapter manifest loader (`packages/curriculum`).  
+3. First vertical slice: **Class 10 Quadratic Equations** (maths) and **Class 10 Chemical Reactions and Equations** (chemistry) as reference modules that prove the schema end-to-end.  
 4. Stand up golden-test harness around NCERT worked examples for those two chapters.  
 5. Only then expand across Class 9–10 maths.

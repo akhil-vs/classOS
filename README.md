@@ -12,6 +12,7 @@ The board recognises what the teacher writes, opens verified interactive demonst
 | [`docs/curriculum/inventory.json`](docs/curriculum/inventory.json) | Topic/chapter inventory by subject and class |
 | [`docs/curriculum/topic-schema.md`](docs/curriculum/topic-schema.md) | Data contract for every topic module |
 | [`docs/architecture/engines.md`](docs/architecture/engines.md) | Maths / Physics / Chemistry engine requirements |
+| [`docs/architecture/web-app.md`](docs/architecture/web-app.md) | Web app surfaces, stack, data model, milestones |
 | [`docs/ClassOS_Full_Topic-by-Topic_Plan_CBSE.pdf`](docs/ClassOS_Full_Topic-by-Topic_Plan_CBSE.pdf) | Source topic-by-topic plan |
 
 ## Build order (summary)
