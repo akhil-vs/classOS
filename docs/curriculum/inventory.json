@@ -1,0 +1,233 @@
+{
+  "source": "ClassOS Full Topic-by-Topic Plan for Mathematics, Physics and Chemistry (CBSE)",
+  "scopeNote": "Chapter lists follow NCERT/CBSE structure in the source plan. Validate against the current CBSE curriculum document before development of each chapter begins. Treat as a content checklist, not a final syllabus.",
+  "subjects": {
+    "mathematics": {
+      "foundation_6_8": {
+        "phase": 8,
+        "topics": [
+          "Whole numbers, integers, number line",
+          "Fractions, decimals, ratio, percentage",
+          "Playing with numbers, factors, multiples, HCF and LCM",
+          "Basic geometry, angles, lines",
+          "Triangles, quadrilaterals, symmetry",
+          "Perimeter, area, volume",
+          "Algebra basics, simple equations",
+          "Exponents and powers, squares and roots",
+          "Data handling, bar graphs, mean, median, mode",
+          "Probability (Class 7 and 8)"
+        ]
+      },
+      "class_9": {
+        "phase": 2,
+        "chapters": [
+          "Number Systems",
+          "Polynomials",
+          "Coordinate Geometry",
+          "Linear Equations in Two Variables",
+          "Introduction to Euclid's Geometry",
+          "Lines and Angles",
+          "Triangles",
+          "Quadrilaterals",
+          "Circles",
+          "Areas of Parallelograms and Triangles",
+          "Heron's Formula",
+          "Surface Areas and Volumes",
+          "Statistics"
+        ]
+      },
+      "class_10": {
+        "phase": 2,
+        "chapters": [
+          "Real Numbers",
+          "Polynomials",
+          "Pair of Linear Equations in Two Variables",
+          "Quadratic Equations",
+          "Arithmetic Progressions",
+          "Triangles (Similarity)",
+          "Coordinate Geometry",
+          "Introduction to Trigonometry and Applications",
+          "Circles",
+          "Areas Related to Circles",
+          "Surface Areas and Volumes",
+          "Statistics",
+          "Probability"
+        ]
+      },
+      "class_11": {
+        "phase": 5,
+        "chapters": [
+          "Sets",
+          "Relations and Functions",
+          "Trigonometric Functions",
+          "Complex Numbers and Quadratic Equations",
+          "Linear Inequalities",
+          "Permutations and Combinations",
+          "Binomial Theorem",
+          "Sequences and Series",
+          "Straight Lines",
+          "Conic Sections",
+          "Introduction to Three-Dimensional Geometry",
+          "Limits and Derivatives",
+          "Statistics",
+          "Probability"
+        ]
+      },
+      "class_12": {
+        "phase": 5,
+        "chapters": [
+          "Relations and Functions",
+          "Inverse Trigonometric Functions",
+          "Matrices",
+          "Determinants",
+          "Continuity and Differentiability",
+          "Applications of Derivatives",
+          "Integrals",
+          "Applications of Integrals",
+          "Differential Equations",
+          "Vector Algebra",
+          "Three-Dimensional Geometry",
+          "Linear Programming",
+          "Probability"
+        ]
+      }
+    },
+    "physics": {
+      "foundation_6_8": {
+        "phase": 8,
+        "topics": [
+          "Motion and measurement of distances",
+          "Light, shadows, reflection",
+          "Electricity and circuits (basic)",
+          "Magnets",
+          "Force and pressure, friction",
+          "Sound",
+          "Heat and temperature, conduction, convection, radiation",
+          "Chemical effects of current, lightning, stars and solar system"
+        ]
+      },
+      "class_9": {
+        "phase": 3,
+        "chapters": [
+          "Motion",
+          "Force and Laws of Motion",
+          "Gravitation",
+          "Work and Energy",
+          "Sound"
+        ]
+      },
+      "class_10": {
+        "phase": 3,
+        "chapters": [
+          "Light: Reflection and Refraction",
+          "Human Eye and the Colourful World",
+          "Electricity",
+          "Magnetic Effects of Electric Current"
+        ]
+      },
+      "class_11": {
+        "phase": 6,
+        "chapters": [
+          "Units and Measurement",
+          "Motion in a Straight Line",
+          "Motion in a Plane",
+          "Laws of Motion",
+          "Work, Energy and Power",
+          "System of Particles and Rotational Motion",
+          "Gravitation",
+          "Mechanical Properties of Solids and Fluids",
+          "Thermal Properties of Matter and Thermodynamics",
+          "Kinetic Theory",
+          "Oscillations",
+          "Waves"
+        ]
+      },
+      "class_12": {
+        "phase": 6,
+        "chapters": [
+          "Electric Charges and Fields",
+          "Electrostatic Potential and Capacitance",
+          "Current Electricity",
+          "Moving Charges and Magnetism",
+          "Magnetism and Matter",
+          "Electromagnetic Induction",
+          "Alternating Current",
+          "Electromagnetic Waves",
+          "Ray Optics and Optical Instruments",
+          "Wave Optics",
+          "Dual Nature of Radiation and Matter",
+          "Atoms and Nuclei",
+          "Semiconductor Electronics"
+        ]
+      }
+    },
+    "chemistry": {
+      "foundation_6_8": {
+        "phase": 8,
+        "topics": [
+          "Materials and their properties, separation of substances",
+          "Changes around us, physical and chemical",
+          "Acids, bases and salts (introduction)",
+          "Fibres, coal and petroleum, combustion and flame",
+          "Metals and non-metals",
+          "Particulate nature of matter"
+        ]
+      },
+      "class_9": {
+        "phase": 3,
+        "chapters": [
+          "Matter in Our Surroundings",
+          "Is Matter Around Us Pure?",
+          "Atoms and Molecules",
+          "Structure of the Atom"
+        ]
+      },
+      "class_10": {
+        "phase": 3,
+        "chapters": [
+          "Chemical Reactions and Equations",
+          "Acids, Bases and Salts",
+          "Metals and Non-metals",
+          "Carbon and Its Compounds",
+          "Periodic Classification of Elements"
+        ]
+      },
+      "class_11": {
+        "phase": 7,
+        "chapters": [
+          "Some Basic Concepts of Chemistry",
+          "Structure of Atom",
+          "Classification of Elements and Periodicity",
+          "Chemical Bonding and Molecular Structure",
+          "Thermodynamics",
+          "Equilibrium",
+          "Redox Reactions",
+          "Organic Chemistry: Some Basic Principles and Techniques",
+          "Hydrocarbons"
+        ]
+      },
+      "class_12": {
+        "phase": 7,
+        "chapters": [
+          "Solutions",
+          "Electrochemistry",
+          "Chemical Kinetics",
+          "The d- and f-Block Elements",
+          "Coordination Compounds",
+          "Haloalkanes and Haloarenes",
+          "Alcohols, Phenols and Ethers",
+          "Aldehydes, Ketones and Carboxylic Acids",
+          "Amines",
+          "Biomolecules"
+        ]
+      }
+    }
+  },
+  "counts": {
+    "mathChapters_9_to_12": 53,
+    "physicsChapters_9_to_12": 34,
+    "chemistryChapters_9_to_12": 28,
+    "foundationTopicBundles": 24,
+    "totalTrackedUnits": 139
+  }
+}
