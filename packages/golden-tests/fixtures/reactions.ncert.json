@@ -1,0 +1,33 @@
+[
+  {
+    "id": "ncert.chem10.reactions.balance.water",
+    "source": "NCERT Class 10 Chemical Reactions — water formation",
+    "topicId": "chem.10.chemical-reactions.balancing",
+    "input": { "reactants": ["H2", "O2"], "products": ["H2O"] },
+    "expected": { "equation": "2H2 + O2 → 2H2O" }
+  },
+  {
+    "id": "ncert.chem10.reactions.balance.iron_sulphur",
+    "source": "NCERT Class 10 Chemical Reactions — Fe + S",
+    "topicId": "chem.10.chemical-reactions.balancing",
+    "input": { "reactants": ["Fe", "S"], "products": ["FeS"] },
+    "expected": { "equation": "Fe + S → FeS" }
+  },
+  {
+    "id": "ncert.chem10.reactions.balance.hydrogen_chloride",
+    "source": "NCERT Class 10 Chemical Reactions — H2 + Cl2",
+    "topicId": "chem.10.chemical-reactions.balancing",
+    "input": { "reactants": ["H2", "Cl2"], "products": ["HCl"] },
+    "expected": { "equation": "H2 + Cl2 → 2HCl" }
+  },
+  {
+    "id": "ncert.chem10.reactions.balance.steam_iron",
+    "source": "NCERT Class 10 Chemical Reactions — iron + steam",
+    "topicId": "chem.10.chemical-reactions.balancing",
+    "input": {
+      "reactants": ["Fe", "H2O"],
+      "products": ["Fe3O4", "H2"]
+    },
+    "expected": { "equation": "3Fe + 4H2O → Fe3O4 + 4H2" }
+  }
+]
