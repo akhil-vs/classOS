@@ -12,6 +12,44 @@ Engines (CAS, simulators, curated databases) calculate; the AI explains and neve
 | Personal blackboard | Student | Freeform ink + widgets on their device |
 | Classroom board | Teacher + class | Projected live board; students join to vote/answer |
 
+## Quick start
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Home / continue learning |
+| `/browse` | Class → subject → chapter → topic |
+| `/learn/[topicId]` | Guided Learn workspace |
+| `/board` | Personal blackboard |
+| `/settings` | Language / input prefs stub |
+| `/author` | Internal manifest list |
+
+```bash
+pnpm test
+pnpm --filter @classos/web build
+```
+
+## Monorepo
+
+```
+apps/web                 Next.js App Router
+packages/board-core      Ink, chips, AI on/off, session timeline
+packages/topic-ui        Guided Learn shell
+packages/input-kit       Pointer + keyboard controls
+packages/widgets         Graph, scene, molecule, quadratic, balancer
+packages/engines-math    Quadratic CAS bridge + units
+packages/engines-chem    Exact equation balancer
+packages/curriculum      Inventory + topic manifests
+packages/golden-tests    NCERT fixtures for reference chapters
+packages/ui              Tokens + shared chrome
+```
+
 ## Planning docs
 
 | Doc | Purpose |

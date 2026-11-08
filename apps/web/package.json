@@ -1,0 +1,32 @@
+{
+  "name": "@classos/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "lint": "next lint",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@classos/board-core": "workspace:*",
+    "@classos/curriculum": "workspace:*",
+    "@classos/engines-chem": "workspace:*",
+    "@classos/engines-math": "workspace:*",
+    "@classos/input-kit": "workspace:*",
+    "@classos/topic-ui": "workspace:*",
+    "@classos/ui": "workspace:*",
+    "@classos/widgets": "workspace:*",
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "typescript": "^5.7.3"
+  }
+}

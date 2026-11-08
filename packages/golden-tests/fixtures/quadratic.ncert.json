@@ -1,0 +1,46 @@
+[
+  {
+    "id": "ncert.ex.4.3.q1",
+    "source": "NCERT Class 10 Maths Ex 4.3 Q1 (representative)",
+    "topicId": "math.10.quadratic-equations.solving",
+    "input": { "a": 1, "b": -5, "c": 6 },
+    "expected": {
+      "nature": "two_distinct_real",
+      "roots": ["2", "3"],
+      "discriminant": "1"
+    }
+  },
+  {
+    "id": "ncert.ex.4.3.q2",
+    "source": "NCERT Class 10 Maths Ex 4.3 style — equal roots",
+    "topicId": "math.10.quadratic-equations.discriminant",
+    "input": { "a": 1, "b": -2, "c": 1 },
+    "expected": {
+      "nature": "two_equal_real",
+      "roots": ["1", "1"],
+      "discriminant": "0"
+    }
+  },
+  {
+    "id": "ncert.ex.4.3.q3",
+    "source": "NCERT Class 10 Maths Ex 4.3 style — no real roots",
+    "topicId": "math.10.quadratic-equations.discriminant",
+    "input": { "a": 1, "b": 1, "c": 1 },
+    "expected": {
+      "nature": "no_real",
+      "roots": ["no real roots"],
+      "discriminant": "-3"
+    }
+  },
+  {
+    "id": "ncert.ex.4.1.q1",
+    "source": "NCERT Class 10 Maths Ex 4.1 style — 2x² − 7x + 3",
+    "topicId": "math.10.quadratic-equations.standard-form",
+    "input": { "a": 2, "b": -7, "c": 3 },
+    "expected": {
+      "nature": "two_distinct_real",
+      "roots": ["1/2", "3"],
+      "discriminant": "25"
+    }
+  }
+]
