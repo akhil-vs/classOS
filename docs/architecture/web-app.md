@@ -1,112 +1,278 @@
 # ClassOS web application plan
 
-Browser-first interactive blackboard for classroom projection and teacher devices, with a later student-device layer. This plan maps the product roadmap onto a concrete web architecture.
+Progressive web app for CBSE Mathematics, Physics and Chemistry with **three surfaces** that share the same engines and topic modules:
+
+1. **Learn** — student self-study on phone or laptop (guided modes).  
+2. **Blackboard (personal)** — freeform interactive board for one learner.  
+3. **Classroom board** — teacher drives a projected/large board; students join on their devices for Predict votes and Check-it.
+
+Touch and non-touch (mouse + keyboard) parity is mandatory on every surface.
 
 Related: [`../PRODUCT_PLAN.md`](../PRODUCT_PLAN.md) · [`engines.md`](./engines.md) · [`../curriculum/topic-schema.md`](../curriculum/topic-schema.md)
 
-## Product surfaces
+## Product thesis (web)
 
-| Surface | Primary user | Purpose | Phase |
+What is written or entered is recognised; the board responds with a verified interactive demonstration; the student leaves with the misconception fixed. Concept before calculation. CAS, simulators and curated databases calculate; the AI explains and never invents answers. A human stays in control — recognition appears as chips and nothing opens unless the teacher or student confirms it.
+
+## Product modes at a glance
+
+| Mode | Primary user | Device | Board behaviour |
 | --- | --- | --- | --- |
-| `/board` | Teacher | Full-bleed interactive blackboard (ink, widgets, chips, modes) | 1 |
-| `/plan` | Teacher | Lesson planner: chapter → suggested See/Predict/Derive/Solve/Check sequence | 2 |
-| `/replay/:id` | Teacher / absent student | Recorded stroke + widget + voice replay and auto class notes | 2–4 |
-| `/join/:code` | Student device | QR join for predict votes and Check-it answers | 4+ |
-| `/school` | School admin | Classes, teachers, privacy-safe weak-topic reports | 4+ |
-| `/author` | Internal | Chapter manifest + golden-test authoring | 1 (internal) |
+| Learn | Student | Phone / laptop | Guided See → Predict → Build → Derive → Solve → Check |
+| Personal blackboard | Student | Phone / laptop / tablet | Freeform ink + templates + chips + widgets |
+| Classroom board | Teacher (+ class) | Teacher laptop/tablet → projector or large panel; students on phones | Live shared board; AI chips; student `/join` for votes/answers |
 
-Classroom default: teacher laptop/tablet drives a projector or large panel. The board UI is **panel-first** (1080p–4K), touch + stylus, with a compact laptop chrome for tools.
+Shared underneath: topic manifests, engines, misconception cards, golden tests, bilingual UI.
 
-## Recommended stack
+## Devices and input
 
-| Layer | Choice | Why |
+| Device | Typical mode | Primary input | Also supported |
+| --- | --- | --- | --- |
+| Phone (portrait) | Learn, join classroom, light personal board | Touch | Bluetooth keyboard |
+| Tablet | Personal board, Learn, teacher board | Touch + optional stylus | Mouse if attached |
+| Laptop / desktop | Learn, personal board, teacher drive | Mouse + keyboard | Trackpad |
+| Projector / large panel | Classroom board (display of teacher session) | Driven by teacher device | — |
+
+### Input contract (mandatory)
+
+All interactive widgets use a **pointer-agnostic layer** (Pointer Events): one code path for finger and mouse.
+
+| Action | Touch | Mouse / keyboard |
 | --- | --- | --- |
-| App framework | Next.js (App Router) + TypeScript | SSR for auth/school pages; client islands for the board |
-| UI | React + CSS modules / design tokens | Large-panel layout control; avoid heavy dashboard chrome on `/board` |
-| Board canvas | HTML Canvas / WebGL for ink; React portals for widgets | High-frequency stroke path; widgets as overlays |
-| State | Zustand (board session) + URL lesson params | Fast local board state; shareable lesson deep-links |
-| Maths CAS | SymPy compiled to WASM (Pyodide or dedicated build) | Exact arithmetic in-browser; AI never calculates |
-| Geometry | JSXGraph or custom constraint layer | Drag-invariant figures |
-| Chemistry | RDKit.js (WASM) + 3D viewer (3Dmol.js / mol\* ) | Structures, masses, depiction |
-| Physics sims | TypeScript engines (RK4, MNA) + WebGL overlays | Deterministic, golden-testable |
-| Recognition | On-device or edge model for ink → latex/chem/scene chips | Suggestions only; teacher confirms |
-| Explain layer | Server LLM with tool calls into verified engines | Phrases steps from templates; never invents numeric results |
-| API / data | Next.js route handlers + Postgres | Schools, lessons, replays, reports |
-| Auth | School SSO / email magic link; role: teacher, admin, student | DPDP-aligned access |
-| Realtime (later) | WebSocket / SSE for `/join` votes | Classroom predict mode |
-| Tests | Vitest + Playwright; golden JSON fixtures per NCERT example | Ship gate |
+| Select control | Tap | Click |
+| Change a value | Slider / stepper / keypad sheet | Slider, scroll wheel, or typed field |
+| Drag a point / object | One-finger drag | Click-drag |
+| Pan / zoom stage | Pinch + two-finger pan | Scroll wheel / trackpad + optional buttons |
+| Enter maths / chem | Template chips + symbol keypad | Keyboard + LaTeX-friendly field |
+| Draw on blackboard | Finger / stylus ink | Mouse ink; or skip ink and use insert tools |
+| Confirm recognition chip | Tap chip | Click chip / Enter when focused |
+| Undo / modes | On-screen buttons | Buttons + shortcuts (`Z`, `1`–`6` for modes) |
 
-**Principle:** compute that must be correct runs in **deterministic engines** (client WASM/TS or audited server). The LLM only selects templates, narrates, and proposes chips.
+**Rule:** every gesture required to complete a topic or board action must have a non-touch equivalent. No feature may be touch-only or mouse-only for required paths.
 
-## Runtime split
+Hit targets ≥ 44×44 CSS px on small screens. Classroom board chrome may be denser on large panels.
+
+---
+
+## 1. Learn (student self-study)
+
+### Surfaces
+
+| Surface | Purpose | Phase |
+| --- | --- | --- |
+| `/` | Home: continue learning, pick class/subject | W0 |
+| `/browse` | Class → subject → chapter → topic | W0 |
+| `/learn/[topicId]` | Guided topic workspace | W1 |
+| `/practice/[topicId]` | Check-it / PYQ-style practice | W2 |
+| `/progress` | Personal weak topics and mastery | W4 |
+| `/settings` | Language, input prefs, text size | W1 |
+
+### Layouts
+
+**Phone (stacked)**
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│ Teacher browser                                         │
-│  ink capture → recognition chips (opt-in)               │
-│  topic widgets ← CAS / geometry / scene / RDKit WASM    │
-│  two-path verify (symbolic + numeric) locally when possible │
-└───────────────────────────┬─────────────────────────────┘
-                            │ lesson save, explain, replay
-                            ▼
-┌─────────────────────────────────────────────────────────┐
-│ Web API                                                 │
-│  auth, manifests CDN, lesson/replay store               │
-│  explain endpoint (LLM + step templates + engine tools) │
-│  golden-test CI runner                                  │
-│  reaction knowledge base / PYQ bank (read-only to client)│
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────┐
+│ Topic title · mode tabs │
+├─────────────────────────┤
+│   Interactive stage     │
+├─────────────────────────┤
+│ Controls / keypad       │
+├─────────────────────────┤
+│ Steps · Check · AI tip  │
+└─────────────────────────┘
 ```
 
-| Runs in browser | Runs on server |
-| --- | --- |
-| Ink, widgets, most CAS/solve, sims, molecule view | Auth, school tenancy, replays, weak-topic reports |
-| Local two-path checks for interactive edits | LLM explanation with tool-verified answers |
-| Chapter manifests cached from CDN | Curated reaction DB writes; content publishing |
-| Blackboard-only mode (fully offline-capable later) | Recognition model updates; analytics aggregates |
-
-## Information architecture
-
-### Board layout (single composition)
+**Laptop (split)**
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│ Brand / class chip          modes  units  AI: on/off │
+│ ClassOS · topic crumb · modes · settings             │
+├────────────────────────────┬─────────────────────────┤
+│   Interactive stage        │ Controls · steps · Check│
+└────────────────────────────┴─────────────────────────┘
+```
+
+### Flows
+
+1. Browse → See → Predict (self) → Build → Derive → Solve → Check.  
+2. Quick practice with randomised numericals.  
+3. Resume last topic from home.  
+4. Ask explain; answer must cite verified engine output.
+
+---
+
+## 2. Blackboard — personal
+
+Personal freeform board for homework, revision, and open exploration. Same ink/widget stack as the classroom board, without live class sync.
+
+### Surfaces
+
+| Surface | Purpose | Phase |
+| --- | --- | --- |
+| `/board` | Personal interactive blackboard | W1 |
+| `/board?topic=` | Board preloaded with a topic’s templates/widgets | W2 |
+| `/replay/:id` | Replay of a saved personal board session | W4 |
+
+### Layout
+
+```
+┌──────────────────────────────────────────────────────┐
+│ ClassOS board     modes · units · AI: on/off · save  │
 ├──────────┬───────────────────────────────────────────┤
-│ Tool rail│           Full-bleed board surface        │
+│ Tool rail│           Board surface                   │
 │ pen      │  ink + live widgets + assumption banner   │
 │ select   │                                           │
 │ templates│     [ suggestion chips near strokes ]     │
 │ overlays │                                           │
 └──────────┴───────────────────────────────────────────┘
-│ Lesson topic · misconception card · Check-it tray    │
+│ Topic (optional) · misconception · Check-it tray     │
 └──────────────────────────────────────────────────────┘
 ```
 
-No dashboard chrome on the teaching surface. Planner and reports live on separate routes.
+On phones: tool rail collapses to a bottom sheet; chips stack above the tray; templates preferred over long freehand.
 
-### Core user flows
+### Behaviour
 
-1. **Teach** — open lesson from planner → write → tap chip → widget opens in mode See/Build → Derive/Solve → Check.
-2. **Blackboard only** — AI layer off; plain ink + manual widget insert from templates.
-3. **Predict** — freeze sim → students vote on `/join` or hands-up → reveal.
-4. **Replay** — export strokes + widget timeline + optional voice → share link.
-5. **Correct recognition** — one-tap fix; store teacher-specific correction for future chips.
+- **AI on:** ink/typed input → recognition chips → student confirms → widget/solver opens.  
+- **AI off (plain board):** ink and manual template insert only; no chips.  
+- **Show the law:** governing formula overlay with live substituted values.  
+- **Misconception cards:** optional side card when a known error pattern is detected or topic is linked.  
+- **Record:** stroke + widget timeline for later replay and notes.  
+- **Correction loop:** wrong recognition fixed in one tap/click; improves that user’s future chips.
+
+### Flows
+
+1. Open blank board → write `x^2-5x+6=0` or insert quadratic template → confirm chip → graph + solve path.  
+2. Start from a Learn topic → “Open on board” carries widget state into freeform mode.  
+3. Save / replay a revision session.
+
+---
+
+## 3. Classroom board
+
+Teacher-led live board for a real class. Reuses the personal blackboard engine; adds session sync, projection layout, and student join.
+
+### Surfaces
+
+| Surface | Purpose | Phase |
+| --- | --- | --- |
+| `/class/board` | Teacher classroom blackboard (projection-ready) | W5 |
+| `/class/plan` | Lesson planner: chapter → suggested mode sequence | W5 |
+| `/join/:code` | Student join (QR / code) for Predict votes and Check-it | W5 |
+| `/class/replay/:id` | Class session replay + auto notes for absentees | W5 |
+| `/school` | School admin: classes, teachers, privacy-safe reports | W5 |
+
+### Classroom layout (teacher → projector)
+
+```
+┌──────────────────────────────────────────────────────┐
+│ ClassOS · class chip · modes · units · AI · end live │
+├──────────┬───────────────────────────────────────────┤
+│ Tool rail│     Full-bleed board (1080p–4K)           │
+│          │  ink + widgets + assumption banner        │
+│          │  [ chips — teacher must confirm ]         │
+└──────────┴───────────────────────────────────────────┘
+│ Live: N joined · Predict open · Check-it summary     │
+└──────────────────────────────────────────────────────┘
+```
+
+Student `/join` on phones: compact vote / answer UI only — not a second full board unless the teacher pushes “open on student devices.”
+
+### Classroom behaviour
+
+1. **Scene / ink pipeline** — teacher writes or picks a template; system builds board state; simulators/CAS respond.  
+2. **Teacher in control** — chips beside writing; nothing opens unless tapped/clicked.  
+3. **Predict** — board freezes; students vote via `/join` (or hands-up); then reveal.  
+4. **Assumption banner** — textbook idealisations visible; teacher can toggle realism.  
+5. **Blackboard-only** — AI layer off for a plain teaching board.  
+6. **Record and replay** — strokes, widgets, optional voice → class notes + absentee replay.  
+7. **Recognition correction** — one-tap fix; teacher-specific improvement over time.  
+8. **Weak-topic report** — per student/class, private to the school (DPDP Act 2023).
+
+### Classroom flows
+
+1. Lesson planner → start live board → teach with See/Predict/Build/Derive/Solve/Check.  
+2. Students scan QR → vote on Predict → receive pushed Check-it items.  
+3. End class → replay link + notes for absentees.  
+4. School admin reviews aggregate weak topics (not public leaderboards).
+
+---
+
+## Core shared flows (all modes)
+
+| Flow | Learn | Personal board | Classroom |
+| --- | --- | --- | --- |
+| Guided modes | Primary | Optional when topic-linked | Teacher-led sequence |
+| Freeform ink | Optional | Primary | Primary |
+| Recognition chips | Rare (templates first) | Yes, confirm to open | Yes, teacher confirms |
+| Predict | Self choose + reveal | Optional | Class vote via `/join` |
+| Check-it | Personal practice | From board state | Pushed to joined devices |
+| Explain (LLM) | Verified steps only | Verified steps only | Verified steps only |
+| Replay | Session resume | Personal replay | Class replay + notes |
+
+## Recommended stack
+
+| Layer | Choice | Why |
+| --- | --- | --- |
+| App framework | Next.js (App Router) + TypeScript | SSR browse/school pages; client islands for board/learn |
+| UI | React + responsive tokens | Phone Learn + large-panel classroom from one design system |
+| Input | Pointer Events + keyboard map | Touch and mouse share behaviour |
+| Board canvas | HTML Canvas / WebGL ink; React widget overlays | High-frequency strokes; widgets as portals |
+| State | Zustand (session) + URL ids | Shareable Learn links; live class room state |
+| Realtime | WebSocket / SSE for live class + `/join` | Predict votes, presence, pushed Check-it |
+| Maths / Physics / Chem engines | SymPy WASM, TS sims, RDKit.js | Same engines in all three modes |
+| Heavy WASM fallback | Server engine API | Low-end student phones |
+| Recognition | On-device or edge ink → latex/chem/scene chips | Confirm-to-open only |
+| Explain | Server LLM + engine tools | Never invents numeric results |
+| Data | Postgres | Users, schools, sessions, replays, reports |
+| Auth | Learner accounts + teacher/school roles | DPDP-aligned |
+| PWA | Installable student app | Home-screen Learn / join |
+| Tests | Vitest goldens + Playwright phone, desktop, board | Ship gate |
+
+**Principle:** deterministic engines calculate; the LLM explains. Classroom and personal boards share `board-core`; Learn reuses widgets without requiring ink.
+
+## Runtime split
+
+```
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ Student phone / laptop   │  │ Teacher device (+ panel) │
+│ Learn · personal /board  │  │ /class/board live        │
+│ /join during class       │  │ chips confirm → widgets  │
+└────────────┬─────────────┘  └────────────┬─────────────┘
+             │                             │
+             ▼                             ▼
+┌─────────────────────────────────────────────────────────┐
+│ Web API + realtime                                      │
+│ auth · manifests · progress · class sessions            │
+│ explain · engine fallback · golden CI · school reports  │
+└─────────────────────────────────────────────────────────┘
+```
+
+| Runs on device | Runs on server |
+| --- | --- |
+| Learn UI, board ink, most CAS/sims | Auth, tenancy, replays, school reports |
+| Local two-path checks when possible | Live class fan-out; LLM explain |
+| Manifest cache | Content publish; reaction KB |
+| Personal board drafts | Aggregate weak-topic analytics |
 
 ## Monorepo layout (proposed)
 
 ```
 apps/
-  web/                 # Next.js: board, plan, join, school, author
+  web/                 # Learn, personal board, classroom, school, author
 packages/
-  board-core/          # ink engine, chip UI, session model
-  widgets/             # graph, scene, molecule, assessment shells
-  engines-math/        # CAS bridge, step templates, geometry
-  engines-physics/     # scene schema, RK4, circuits, optics
-  engines-chem/        # RDKit bridge, balancer, mechanisms, KB client
-  curriculum/          # manifests JSON (from docs/curriculum)
-  golden-tests/        # NCERT/CBSE fixtures + runners
-  ui/                  # shared tokens, bilingual strings
+  board-core/          # ink, chips, session timeline (personal + classroom)
+  topic-ui/            # Guided Learn workspace shell
+  input-kit/           # Pointer + keyboard bindings, keypad, sliders
+  widgets/             # Graph, scene, molecule, assessment shells
+  class-live/          # Live session, /join protocol, presence
+  engines-math/
+  engines-physics/
+  engines-chem/
+  curriculum/
+  golden-tests/
+  ui/
 ```
 
 ## Data model (minimal)
@@ -114,81 +280,91 @@ packages/
 | Entity | Key fields |
 | --- | --- |
 | `School` | id, name, locale defaults, DPDP settings |
-| `User` | id, schoolId, role, language |
+| `User` | id, role (learner/teacher/admin), schoolId?, language, inputPrefs |
 | `ClassSection` | schoolId, grade, section, subject |
-| `ChapterManifest` | id, subject, classLevel, syllabusYear, topics[] |
-| `TopicModule` | schema in `topic-schema.md` |
-| `LessonSession` | teacherId, topicId, boardState blob, mode timeline |
-| `Replay` | sessionId, strokeEvents, widgetEvents, notesMd |
-| `RecognitionCorrection` | teacherId, inkFeatures, correctedIntent |
-| `AssessmentAttempt` | studentId?, sessionId, items, scores (school-private) |
-| `GoldenCase` | topicId, source (NCERT/CBSE), input, expected engine output |
+| `ChapterManifest` / `TopicModule` | see topic schema |
+| `LearnSession` | userId, topicId, modeTimeline, widgetState |
+| `BoardSession` | userId, mode (`personal`\|`classroom`), stroke/widget events |
+| `LiveClass` | teacherId, classSectionId, joinCode, boardSessionId, status |
+| `JoinPresence` | liveClassId, studentId, votes, checkAnswers |
+| `Replay` | sessionId, events, notesMd |
+| `RecognitionCorrection` | userId, inkFeatures, correctedIntent |
+| `PracticeAttempt` / `Progress` | learner-scoped |
+| `GoldenCase` | topicId, source, expected engine output |
 
-Board state is an event-sourced timeline (ink + widget ops) so replay and sync stay tractable.
+Board state is event-sourced (ink + widget ops) so personal and class replay stay tractable.
 
 ## API sketch
 
 | Method | Path | Role |
 | --- | --- | --- |
-| `GET` | `/api/manifests/:id` | Load chapter/topic module |
-| `POST` | `/api/sessions` | Create lesson session |
-| `PATCH` | `/api/sessions/:id` | Persist board timeline checkpoints |
-| `POST` | `/api/explain` | LLM narration bound to engine tool results |
-| `POST` | `/api/recognize` | Optional server/edge ink recognition |
-| `POST` | `/api/join/:code/vote` | Predict-mode votes |
-| `GET` | `/api/replays/:id` | Replay payload |
-| `GET` | `/api/reports/weak-topics` | Admin/teacher, school-scoped |
-
-`/api/explain` contract: client sends board state + requested template id; server may call the same deterministic solvers; response is prose + structured steps already verified.
+| `GET` | `/api/manifests/:id` | Chapter/topic module |
+| `GET` | `/api/topics` | Browse index |
+| `POST` | `/api/sessions` | Learn or board session |
+| `PATCH` | `/api/sessions/:id` | Checkpoint timeline |
+| `POST` | `/api/explain` | Verified narration |
+| `POST` | `/api/recognize` | Optional ink recognition |
+| `POST` | `/api/engine/:name` | Low-end engine fallback |
+| `POST` | `/api/practice` | Check-it attempts |
+| `GET` | `/api/progress` | Learner mastery |
+| `POST` | `/api/class/live` | Start classroom session + join code |
+| `POST` | `/api/join/:code/vote` | Predict vote |
+| `POST` | `/api/join/:code/answer` | Check-it answer |
+| `GET` | `/api/replays/:id` | Personal or class replay |
+| `GET` | `/api/reports/weak-topics` | School-scoped teacher/admin |
 
 ## Non-functional requirements
 
 | Concern | Target |
 | --- | --- |
-| Board interaction | Ink latency &lt; 16 ms on mid-range classroom tablets |
-| Widget open | &lt; 300 ms after chip tap for cached engines |
-| WASM load | Lazy per subject; show progress; cache via service worker later |
-| Projection | 16:9 and 16:10; UI scales to 1920×1080 minimum |
-| Accessibility | Colour-blind-safe palettes, large text, captions, read-aloud |
-| Language | `en` + `hi` UI and explanations first; bilingual numerals toggle |
-| Privacy | Student analytics private to school; DPDP Act 2023 |
-| Accuracy | Chapter ship gate = golden tests + teacher review |
-| Offline (later) | Cached manifests + WASM engines for blackboard-only |
+| Phone Learn | Usable in portrait at 360 CSS px |
+| Laptop Learn / personal board | Split or tool-rail layout from ~900 CSS px |
+| Classroom panel | 16:9 / 16:10; scales to 1920×1080 minimum |
+| Input parity | Required actions work touch and mouse/keyboard |
+| Ink latency | &lt; 16 ms on mid-range tablets (personal + classroom) |
+| Join latency | Vote appears on teacher board &lt; 1 s on school Wi-Fi |
+| Bundle | Lazy engines per subject; lean Learn first paint |
+| Accessibility | Focus order, keyboard-complete Learn, captions, text size |
+| Language | `en` + `hi` first |
+| Privacy | Learner progress private; class reports school-only (DPDP) |
+| Accuracy | Chapter ship gate = goldens + subject-teacher review |
+| QA matrix | Playwright: phone, desktop, and board projection width |
 
 ## Security & safety
 
-- Teacher confirmation required before any recognition result mutates the board.
-- Chemistry refuses out-of-curriculum product prediction; hazardous demos are virtual only.
-- LLM sandboxed: no raw calculator path; only tool outputs may appear as answers.
-- School data isolation; no cross-school report leakage.
-- Content publishing is signed; clients verify manifest integrity in production.
+- Recognition never mutates the board without explicit confirm (student or teacher).  
+- Chemistry refuses out-of-curriculum products; hazardous demos virtual only.  
+- LLM sandboxed to tool-verified answers.  
+- School data isolation; no cross-school leakage.  
+- Join codes expire with the live session; students cannot drive the teacher board by default.
 
-## Web delivery phases (mapped to product phases)
+## Web delivery phases
 
-| Web milestone | Delivers | Product phase |
-| --- | --- | --- |
-| **W0 – Skeleton** | Next.js app, `/board` blank ink, auth stub, manifest loader | 1 start |
-| **W1 – Board base** | Chips, widgets host, units, AI on/off, sample graph/scene/molecule stubs | 1 |
-| **W2 – Maths vertical** | Class 10 Quadratic Equations module + CAS + golden tests in CI | 2 start |
-| **W3 – Chem vertical** | Class 10 Reactions module + balancer + beaker views | 3 start |
-| **W4 – Classroom pack** | Lesson planner, replay, Class 9–10 maths breadth | 2–3 |
-| **W5 – Pilot** | `/join` votes, school admin, Hindi pack, telemetry for unused chips | 4 |
-| **W6+** | 11–12 engines, physics depth, mechanisms, foundation 6–8 | 5–8 |
+| Milestone | Delivers |
+| --- | --- |
+| **W0 – Skeleton** | Next.js app, browse, auth stub, manifest loader |
+| **W1 – Learn + board base** | `/learn`, `/board` ink+chips+widget host, input-kit, 3 stubs, AI on/off |
+| **W2 – Maths vertical** | Class 10 Quadratics on Learn + board; CAS; golden CI; practice |
+| **W3 – Chem vertical** | Class 10 Reactions; balancer; linked views |
+| **W4 – Progress & personal replay** | `/progress`, Hindi, PWA, personal `/replay`, low-end fallback |
+| **W5 – Classroom pack** | `/class/board`, `/class/plan`, `/join`, live sync, school admin, class replay |
+| **W6 – Pilots** | Learner pilot (phones/laptops) + classroom pilot in a few schools |
+| **W7+** | Class 9–10 breadth, then 11–12, physics depth, foundation 6–8 |
 
 ## Immediate implementation order
 
-1. Scaffold `apps/web` with `/board` full-bleed ink surface and tool rail.  
-2. Add `packages/curriculum` consuming `docs/curriculum/inventory.json` + topic schema.  
-3. Implement widget host + three stubs (function graph, inclined-plane scene, molecule).  
-4. Wire SymPy WASM for the quadratic reference topic.  
-5. Add `/api/explain` stub that only returns template steps for verified CAS output.  
-6. Stand Vitest golden fixtures for NCERT Class 10 Quadratic worked examples.  
-7. Repeat pattern for Chemical Reactions balancer.
+1. Scaffold `apps/web` with `/browse`, `/learn/[topicId]`, and `/board`.  
+2. `packages/input-kit` + `board-core` (ink, chips, AI on/off) shared by personal board.  
+3. `packages/curriculum` from inventory + topic schema.  
+4. Widget stubs on both Learn and Board at 360px and 1280px (and 1920 width smoke test).  
+5. Class 10 Quadratics vertical (typed controls + optional ink).  
+6. Explain stub + NCERT goldens.  
+7. Chemical Reactions vertical.  
+8. Only after W4: live classroom (`class-live`, `/join`, projection chrome).
 
-## Out of scope for first web MVP
+## Out of scope for early milestones
 
-- Free-hand organic structure and circuit recognition (toolbars/templates only).  
-- Student accounts depth beyond ephemeral `/join` codes.  
+- Free-hand organic/circuit recognition as the default phone path (templates first).  
 - Biology and other subjects.  
-- Fully offline PWA (design for it; ship online-first).  
-- Automated theorem proving.
+- Automated theorem proving.  
+- Students remotely controlling the teacher’s live board (view/vote/answer only unless teacher enables).

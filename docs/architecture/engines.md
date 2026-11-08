@@ -6,18 +6,22 @@ Source of truth for calculations and simulations: CAS, physics simulators, and c
 
 | Capability | Requirement |
 | --- | --- |
-| Ink + recognition | Pen/finger input with palm rejection; recognition suggestions as chips the teacher must tap to open |
+| Input parity | Pointer Events + keyboard: every required action works on touch and on mouse/keyboard |
+| Board core | Shared ink + recognition chips + widget host for personal `/board` and classroom `/class/board` |
+| Optional ink on Learn | Finger/stylus/mouse drawing optional; templates and typed entry default on phones |
+| Confirm-to-open | Recognition chips never open a widget until the student or teacher confirms |
 | Widget framework | Reusable interactive modules (graphs, scenes, molecule views, assessment cards) |
 | Variables + units | Every quantity carries units; dimension checker for formula validation |
-| Teaching modes | See it → Predict → Build it → Derive it → Solve it → Check it on every topic |
+| Modes | See it → Predict → Build it → Derive it → Solve it → Check it (self-paced or teacher-led) |
 | Content as data | Chapter manifests update without code changes |
+| Device fallback | Heavy WASM may run on server for low-end phones; answers must match on-device engines |
 
 ## Mathematics engine
 
 | Component | Approach |
 | --- | --- |
 | Exact algebra | Browser CAS (SymPy/WASM) for exact arithmetic, solving, calculus, matrices |
-| Step generator | Rule-based CBSE-style templates reviewed by CBSE teachers; AI only phrases steps |
+| Step generator | Rule-based CBSE-style templates reviewed by CBSE subject teachers; AI only phrases steps |
 | Dynamic geometry | Constraint solver so dragged figures keep relations (JSXGraph or similar) |
 | Two-path verification | Symbolic + numerical check; disagreement flagged, not shown as truth |
 | Proof support | Line-by-line algebraic validity checking; no full automated theorem proving |
