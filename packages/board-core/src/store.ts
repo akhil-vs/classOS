@@ -65,7 +65,7 @@ interface BoardStore extends BoardState {
   clearBoard: () => void;
   confirmChip: (chipId: string) => void;
   dismissChip: (chipId: string) => void;
-  insertTemplate: (kind: BoardWidgetInstance["kind"]) => void;
+  insertTemplate: (kind: BoardWidgetInstance["kind"] | string) => void;
 }
 
 const initial: BoardState = {
@@ -169,17 +169,23 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
       chips: state.chips.filter((item) => item.id !== chipId),
     })),
   insertTemplate: (kind) => {
-    const titles: Record<BoardWidgetInstance["kind"], string> = {
+    const titles: Record<string, string> = {
       graph: "Function graph",
       scene: "Inclined plane",
       molecule: "Molecule view",
       quadratic: "Quadratic lab",
       balancer: "Equation balancer",
+      linear: "Linear system lab",
+      polynomial: "Polynomial lab",
+      ap: "Arithmetic progression",
     };
+    const widgetKind = (kind in titles
+      ? kind
+      : "graph") as BoardWidgetInstance["kind"];
     const widget: BoardWidgetInstance = {
       id: uid("widget"),
-      kind,
-      title: titles[kind],
+      kind: widgetKind,
+      title: titles[widgetKind] ?? "Widget",
     };
     set((state) => ({
       widgets: [...state.widgets, widget],

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ncert.ex.3.4.q1",
+    "source": "NCERT Class 10 Pair of Linear Equations style",
+    "topicId": "math.10.linear-equations.algebraic",
+    "input": { "a1": 1, "b1": 1, "c1": 5, "a2": 1, "b2": -1, "c2": 1 },
+    "expected": { "nature": "unique", "x": "3", "y": "2" }
+  },
+  {
+    "id": "ncert.ex.3.4.q2",
+    "source": "NCERT Class 10 inconsistent system style",
+    "topicId": "math.10.linear-equations.algebraic",
+    "input": { "a1": 1, "b1": 1, "c1": 2, "a2": 2, "b2": 2, "c2": 5 },
+    "expected": { "nature": "none" }
+  },
+  {
+    "id": "ncert.ex.3.2.q1",
+    "source": "NCERT Class 10 graphical unique intersection style",
+    "topicId": "math.10.linear-equations.graphical",
+    "input": { "a1": 2, "b1": 1, "c1": 5, "a2": 1, "b2": -1, "c2": 1 },
+    "expected": { "nature": "unique", "x": "2", "y": "1" }
+  },
+  {
+    "id": "ncert.linear9.q1",
+    "source": "NCERT Class 9 linear equation style — treat as underdetermined pair probe",
+    "topicId": "math.9.linear-equations.graph",
+    "input": { "a1": 1, "b1": 1, "c1": 2, "a2": 2, "b2": 2, "c2": 4 },
+    "expected": { "nature": "infinite" }
+  }
+]

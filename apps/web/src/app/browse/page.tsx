@@ -49,6 +49,9 @@ async function BrowseInner({
           <Link href="/board" style={navChip}>
             Board
           </Link>
+          <Link href="/progress" style={navChip}>
+            Progress
+          </Link>
           <Link href="/settings" style={navChip}>
             Settings
           </Link>
@@ -142,19 +145,32 @@ async function BrowseInner({
                   {topics.map((topic) =>
                     topic ? (
                       <li key={topic.id}>
-                        <Link
-                          href={`/learn/${topic.id}`}
+                        <div
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
                             gap: 12,
                             padding: "12px 0",
                             borderBottom: "1px solid rgba(214,230,212,0.08)",
+                            flexWrap: "wrap",
                           }}
                         >
                           <span>{topic.topic}</span>
-                          <span style={{ color: "var(--co-accent)" }}>Learn →</span>
-                        </Link>
+                          <span style={{ display: "flex", gap: 10 }}>
+                            <Link
+                              href={`/learn/${topic.id}`}
+                              style={{ color: "var(--co-accent)" }}
+                            >
+                              Learn
+                            </Link>
+                            <Link
+                              href={`/practice/${topic.id}`}
+                              style={{ color: "var(--co-ink-muted)" }}
+                            >
+                              Practice
+                            </Link>
+                          </span>
+                        </div>
                       </li>
                     ) : null,
                   )}

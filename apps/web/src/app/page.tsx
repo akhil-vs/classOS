@@ -59,6 +59,9 @@ export default function HomePage() {
         <Link href="/board" style={secondaryBtn}>
           Personal board
         </Link>
+        <Link href="/progress" style={secondaryBtn}>
+          Progress
+        </Link>
       </div>
 
       <div

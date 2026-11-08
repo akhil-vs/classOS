@@ -17,3 +17,12 @@ export {
   getTopicsByChapter,
 } from "./loader";
 export { inventory, inventoryCounts, listInventoryChapters } from "./inventory";
+export {
+  generatePracticeItems,
+  gradePracticeAnswer,
+  type PracticeItem,
+} from "./practice";
+export {
+  syllabusValidations,
+  type SyllabusValidation,
+} from "./syllabus";

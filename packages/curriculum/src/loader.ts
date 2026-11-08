@@ -1,4 +1,6 @@
 import { inventory, listInventoryChapters } from "./inventory";
+import { class9MathsTopics } from "./topics/class9-maths";
+import { class10MathsTopics } from "./topics/class10-maths";
 import { quadraticTopics } from "./topics/quadratic";
 import { reactionTopics } from "./topics/reactions";
 import { stubTopics } from "./topics/stubs";
@@ -11,6 +13,8 @@ import type {
 
 const ALL_TOPICS: TopicModule[] = [
   ...quadraticTopics,
+  ...class10MathsTopics,
+  ...class9MathsTopics,
   ...reactionTopics,
   ...stubTopics,
 ];

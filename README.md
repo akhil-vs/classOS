@@ -27,12 +27,15 @@ Open [http://localhost:3000](http://localhost:3000).
 | `/browse` | Class → subject → chapter → topic |
 | `/learn/[topicId]` | Guided Learn workspace |
 | `/board` | Personal blackboard |
+| `/practice/[topicId]` | Check-it practice from verified engines |
+| `/progress` | Personal mastery (auth stub) |
 | `/settings` | Language / input prefs stub |
 | `/author` | Internal manifest list |
 
 ```bash
 pnpm test
 pnpm --filter @classos/web build
+pnpm --filter @classos/web test:e2e
 ```
 
 ## Monorepo
