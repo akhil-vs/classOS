@@ -13,7 +13,10 @@ Every ClassOS chapter topic is packaged as a data-driven module. Curriculum chan
   "topic": "Nature of roots / discriminant",
   "syllabusYear": "2025-26",
   "status": "planned",
-  "teacherWrites": ["ax^2+bx+c=0", "drag a,b,c"],
+  "studentInput": {
+    "touch": ["drag parabola coeffs", "slider for a,b,c"],
+    "pointerKeyboard": ["type a,b,c", "arrow-adjust focused slider"]
+  },
   "boardResponse": "Parabola with live discriminant; nature of roots updates",
   "understandingGoal": "Why the formula works and what the discriminant means",
   "modes": ["see", "predict", "build", "derive", "solve", "check"],
@@ -31,9 +34,9 @@ Every ClassOS chapter topic is packaged as a data-driven module. Curriculum chan
 
 ## Pedagogical contract
 
-For each topic the product must state three things from the source plan:
+For each topic the product must state three things:
 
-1. **Teacher writes / draws** — input the board must recognise or accept via toolbar.
+1. **Student input** — how the learner drives the demo on touch and on mouse/keyboard (both required).
 2. **Board response** — live demonstration, simulation, or solver that opens.
 3. **Understanding goal** — concept or misconception the demo is designed to fix.
 
@@ -41,12 +44,12 @@ For each topic the product must state three things from the source plan:
 
 | Mode | Behaviour |
 | --- | --- |
-| See it | Clean visual, no numbers |
-| Predict | Freeze; class votes; then reveal |
-| Build it | Change values; watch effect |
-| Derive it | Formula built from the demonstration |
-| Solve it | CBSE-format worked example with marks |
-| Check it | Auto-generated questions from live board state |
+| See it | Clean visual with no numbers |
+| Predict | Freeze; student picks an outcome; then reveal |
+| Build it | Student changes values and watches the effect |
+| Derive it | Formula built step by step from the demonstration |
+| Solve it | Worked example in CBSE answer format with marks per step |
+| Check it | Auto-generated questions from the exact widget state |
 
 ## Ship gate per chapter
 
@@ -57,3 +60,4 @@ A chapter does not ship until:
 3. Two-path verification has no unresolved disagreements on golden items.
 4. A CBSE-experienced subject teacher has reviewed pedagogy and misconception cards.
 5. Assumption banners / scope refusals are present where required.
+6. Touch and non-touch paths for required interactions are verified in QA (phone + laptop).
