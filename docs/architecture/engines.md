@@ -7,10 +7,12 @@ Source of truth for calculations and simulations: CAS, physics simulators, and c
 | Capability | Requirement |
 | --- | --- |
 | Input parity | Pointer Events + keyboard: every required action works on touch and on mouse/keyboard |
-| Optional ink | Finger/stylus/mouse drawing is optional; templates and typed entry are the default on phones |
+| Board core | Shared ink + recognition chips + widget host for personal `/board` and classroom `/class/board` |
+| Optional ink on Learn | Finger/stylus/mouse drawing optional; templates and typed entry default on phones |
+| Confirm-to-open | Recognition chips never open a widget until the student or teacher confirms |
 | Widget framework | Reusable interactive modules (graphs, scenes, molecule views, assessment cards) |
 | Variables + units | Every quantity carries units; dimension checker for formula validation |
-| Learn modes | See it → Predict → Build it → Derive it → Solve it → Check it on every topic (student-paced) |
+| Modes | See it → Predict → Build it → Derive it → Solve it → Check it (self-paced or teacher-led) |
 | Content as data | Chapter manifests update without code changes |
 | Device fallback | Heavy WASM may run on server for low-end phones; answers must match on-device engines |
 

@@ -36,20 +36,22 @@ Every ClassOS chapter topic is packaged as a data-driven module. Curriculum chan
 
 For each topic the product must state three things:
 
-1. **Student input** — how the learner drives the demo on touch and on mouse/keyboard (both required).
+1. **Input** — how the learner or teacher drives the demo on touch and on mouse/keyboard (both required); include typical ink/template triggers for blackboard modes.
 2. **Board response** — live demonstration, simulation, or solver that opens.
 3. **Understanding goal** — concept or misconception the demo is designed to fix.
 
+Topics must work in **Learn**, **personal blackboard**, and **classroom board** without forking engine logic.
+
 ## Universal modes
 
-| Mode | Behaviour |
-| --- | --- |
-| See it | Clean visual with no numbers |
-| Predict | Freeze; student picks an outcome; then reveal |
-| Build it | Student changes values and watches the effect |
-| Derive it | Formula built step by step from the demonstration |
-| Solve it | Worked example in CBSE answer format with marks per step |
-| Check it | Auto-generated questions from the exact widget state |
+| Mode | Learn / personal board | Classroom board |
+| --- | --- | --- |
+| See it | Clean visual with no numbers | Teacher runs the visual |
+| Predict | Freeze; learner picks; then reveal | Freeze; class votes via `/join`; then reveal |
+| Build it | Learner changes values | Teacher or invited student changes values |
+| Derive it | Formula built from the demonstration | Same, teacher-paced |
+| Solve it | CBSE worked example with marks | Same, on the live board |
+| Check it | Personal questions from widget state | Pushed to joined student devices |
 
 ## Ship gate per chapter
 
