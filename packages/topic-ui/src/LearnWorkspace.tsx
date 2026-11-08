@@ -77,6 +77,9 @@ export function LearnWorkspace({
           <a href="/browse" style={linkBtn}>
             Browse
           </a>
+          <a href={`/practice/${topic.id}`} style={linkBtn}>
+            Practice
+          </a>
           <a href={`/board?topic=${topic.id}`} style={linkBtn}>
             Open on board
           </a>
@@ -174,8 +177,12 @@ export function LearnWorkspace({
 
           {mode === "check" && (
             <Block title="Check-it">
-              Quick item from board state: adjust a control, then explain why the
-              verified output changed.
+              <div style={{ marginBottom: 10 }}>
+                Quick items from verified engines for this topic.
+              </div>
+              <a href={`/practice/${topic.id}`} style={linkBtn}>
+                Open practice set →
+              </a>
             </Block>
           )}
         </aside>

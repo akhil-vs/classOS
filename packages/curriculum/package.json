@@ -12,6 +12,10 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },
+  "dependencies": {
+    "@classos/engines-chem": "workspace:*",
+    "@classos/engines-math": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"

@@ -10,4 +10,5 @@ export type {
   Point,
   Stroke,
   SuggestionChip,
+  WidgetKind,
 } from "./types";

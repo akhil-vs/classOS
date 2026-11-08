@@ -133,6 +133,21 @@ export function BoardShell({
             active={false}
             onClick={() => insertTemplate("balancer")}
           />
+          <RailButton
+            label="Linear"
+            active={false}
+            onClick={() => insertTemplate("linear")}
+          />
+          <RailButton
+            label="Poly"
+            active={false}
+            onClick={() => insertTemplate("polynomial")}
+          />
+          <RailButton
+            label="AP"
+            active={false}
+            onClick={() => insertTemplate("ap")}
+          />
         </aside>
 
         <section

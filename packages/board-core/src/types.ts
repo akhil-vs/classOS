@@ -12,17 +12,27 @@ export interface Stroke {
   width: number;
 }
 
+export type WidgetKind =
+  | "graph"
+  | "scene"
+  | "molecule"
+  | "quadratic"
+  | "balancer"
+  | "linear"
+  | "polynomial"
+  | "ap";
+
 export interface SuggestionChip {
   id: string;
   label: string;
-  intent: "quadratic" | "balancer" | "graph" | "scene" | "molecule";
+  intent: WidgetKind;
   x: number;
   y: number;
 }
 
 export interface BoardWidgetInstance {
   id: string;
-  kind: "graph" | "scene" | "molecule" | "quadratic" | "balancer";
+  kind: WidgetKind;
   title: string;
 }
 

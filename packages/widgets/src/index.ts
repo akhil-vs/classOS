@@ -1,6 +1,9 @@
+export { APLab } from "./APLab";
 export { BalancerLab } from "./BalancerLab";
 export { FunctionGraph } from "./FunctionGraph";
 export { InclinedPlane } from "./InclinedPlane";
+export { LinearLab } from "./LinearLab";
 export { MoleculeView } from "./MoleculeView";
+export { PolynomialLab } from "./PolynomialLab";
 export { QuadraticLab } from "./QuadraticLab";
 export { WidgetHost } from "./WidgetHost";

@@ -6,3 +6,6 @@ coverage
 *.log
 .DS_Store
 .env*.local
+test-results
+playwright-report
+blob-report

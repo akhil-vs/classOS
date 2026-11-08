@@ -37,8 +37,17 @@ export interface TopicModule {
   engines: string[];
   goldenTests: string[];
   languages: Array<"en" | "hi">;
-  widget?: "graph" | "scene" | "molecule" | "quadratic" | "balancer";
+  widget?:
+    | "graph"
+    | "scene"
+    | "molecule"
+    | "quadratic"
+    | "balancer"
+    | "linear"
+    | "polynomial"
+    | "ap";
 }
+
 
 export interface ChapterSummary {
   id: string;
