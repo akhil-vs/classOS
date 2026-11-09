@@ -1,11 +1,17 @@
 export {
+  __PRESENCE_STALE_MS,
   __resetLiveClasses,
   castPredictVote,
   createLiveClass,
   endLiveClass,
   getLiveClass,
   getLiveClassByCode,
+  joinedCount,
+  listSchoolSessionSummaries,
+  registerPresence,
   setPredictOpen,
+  toStudentSnapshot,
+  toTeacherSnapshot,
   voteSummary,
 } from "./session";
 export type {
@@ -13,4 +19,7 @@ export type {
   LiveClassSession,
   LiveClassStatus,
   PredictVote,
+  SchoolSessionSummary,
+  StudentJoinSnapshot,
+  TeacherLiveSnapshot,
 } from "./types";

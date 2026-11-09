@@ -2,7 +2,7 @@ import { BrandMark } from "@classos/ui";
 import Link from "next/link";
 import { ClassBoardClient } from "./ClassBoardClient";
 
-/** Phase 5 scaffold — local-first classroom board after learner pilot. */
+/** Phase 5 — hardened local-first classroom board after learner pilot. */
 export default function ClassBoardPage() {
   return (
     <main>
@@ -23,7 +23,7 @@ export default function ClassBoardPage() {
             Personal board
           </Link>
           <Link href="/school" style={chip}>
-            School
+            School pilot
           </Link>
         </div>
       </div>

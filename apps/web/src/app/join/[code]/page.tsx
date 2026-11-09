@@ -13,9 +13,9 @@ export default async function JoinPage({
       <h1 style={{ fontFamily: "var(--co-font-brand)", letterSpacing: "-0.03em" }}>
         Join class
       </h1>
-      <p style={{ color: "var(--co-ink-muted)" }}>
-        Phone-friendly Predict vote / Check-it stub. Students cannot drive the
-        teacher board.
+      <p style={{ color: "var(--co-ink-muted)", lineHeight: 1.45 }}>
+        Phone-friendly Predict vote. You cannot drive the teacher board — votes
+        stay on the classroom device (local-first).
       </p>
       <JoinClient code={code.toUpperCase()} />
     </main>

@@ -34,9 +34,9 @@ Open [http://localhost:3000](http://localhost:3000).
 | `/learn/[topicId]` | Guided Learn workspace |
 | `/board` | Personal blackboard |
 | `/progress` | Learner-pilot personal progress |
-| `/class/board` | Classroom live pack (local-first) |
-| `/join/[code]` | Student Predict vote |
-| `/school` | School admin stub |
+| `/class/board` | Classroom live pack (local-first Predict + session lifecycle) |
+| `/join/[code]` | Student presence + Predict vote |
+| `/school` | School pilot checklist + local session summaries |
 | `/settings` | Language / input prefs stub |
 | `/author` | Internal manifest + ship-gate list |
 

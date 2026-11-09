@@ -62,6 +62,12 @@ export default function HomePage() {
         <Link href="/progress" style={secondaryBtn}>
           Progress
         </Link>
+        <Link href="/class/board" style={secondaryBtn}>
+          Classroom
+        </Link>
+        <Link href="/school" style={secondaryBtn}>
+          School pilot
+        </Link>
       </div>
 
       <div
