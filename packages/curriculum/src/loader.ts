@@ -1,4 +1,7 @@
 import { inventory, listInventoryChapters } from "./inventory";
+import { evaluateShipGate } from "./shipGate";
+import { geometryTopics } from "./topics/geometry";
+import { linearTopics } from "./topics/linear";
 import { quadraticTopics } from "./topics/quadratic";
 import { reactionTopics } from "./topics/reactions";
 import { stubTopics } from "./topics/stubs";
@@ -11,6 +14,8 @@ import type {
 
 const ALL_TOPICS: TopicModule[] = [
   ...quadraticTopics,
+  ...linearTopics,
+  ...geometryTopics,
   ...reactionTopics,
   ...stubTopics,
 ];
@@ -100,10 +105,12 @@ export function getManifestPayload(id: string) {
 }
 
 export function curriculumHealth() {
+  const shipped = ALL_TOPICS.filter((topic) => topic.status === "shipped");
   return {
     inventoryUnits: inventory.counts.totalTrackedUnits,
     implementedTopics: ALL_TOPICS.length,
-    shippedTopics: ALL_TOPICS.filter((topic) => topic.status === "shipped")
+    shippedTopics: shipped.length,
+    shipGateReady: ALL_TOPICS.filter((topic) => evaluateShipGate(topic).canShip)
       .length,
   };
 }

@@ -4,6 +4,9 @@ AI-powered interactive learning and blackboard app for CBSE Mathematics, Physics
 
 This document turns the full topic-by-topic source plan into an actionable build and rollout plan. Source PDF: [`ClassOS_Full_Topic-by-Topic_Plan_CBSE.pdf`](./ClassOS_Full_Topic-by-Topic_Plan_CBSE.pdf).
 
+**Critical path (authoritative order):** [`CRITICAL_PATH.md`](./CRITICAL_PATH.md)  
+One-line rule: **Platform → one maths vertical → one chem vertical → learner pilot → classroom → breadth.**
+
 ## Product thesis
 
 What the learner or teacher writes (or enters) is recognised; the board responds with a verified interactive demonstration; the student leaves with the misconception fixed. Concept before calculation. The computer algebra system, simulators and curated databases calculate; the AI explains and never invents answers. A human stays in control — suggestions appear as chips and nothing opens unless confirmed.
@@ -16,7 +19,7 @@ ClassOS ships in three modes that share engines and curriculum data:
 
 ## Scope
 
-| In scope (phase plan) | Later |
+| In scope (phase plan) | Later / deferred |
 | --- | --- |
 | Maths, Physics, Chemistry | Biology and other subjects (same pattern) |
 | Classes 9–12 first, then 6–8 foundation | Broader middle-school depth |
@@ -25,6 +28,9 @@ ClassOS ships in three modes that share engines and curriculum data:
 | Touch and non-touch (mouse + keyboard) parity | Stylus polish |
 | English + Hindi first | Other regional languages |
 | Toolbar / templates before free-hand diagrams | Messy handwriting, free-hand circuits and organic structures |
+| Local-first classroom pack | Cloud student sync |
+| Latin ink heuristics | Devanagari handwriting |
+| — | Panel-vendor matrix, business/onboarding |
 
 **Hard gate:** validate every chapter list against the current CBSE curriculum document before development of that chapter starts. Lists in this repo are a content checklist, not a locked syllabus.
 
@@ -68,44 +74,59 @@ Details: [`architecture/engines.md`](./architecture/engines.md) · [`architectur
 
 Predict is self-paced in Learn/personal board, and class-voted via `/join` on the classroom board.
 
-## Suggested build order
+## Build order (critical path)
 
 | Phase | Scope | Why this order |
 | --- | --- | --- |
-| 1 | Shared base: Learn shell, personal board (ink/chips/widgets), input-kit, units | Everything depends on this |
-| 2 | Class 9–10 Mathematics | Highest demand; shared graph/CAS |
-| 3 | Class 9–10 Chemistry, then Physics | Chemistry notation stricter first |
-| 4 | Learner pilot (phones/laptops) on Learn + personal board | Validate before live class complexity |
-| 5 | Classroom board pack: live session, `/join`, planner, school admin | Reuses board-core; adds realtime |
-| 6 | Classroom pilot in a few schools | Measure recognition errors and unused chips |
-| 7 | Class 11–12 Mathematics | Calculus lab, 3D, vectors |
-| 8 | Class 11–12 Physics | Mechanics → EM/optics → modern |
-| 9 | Class 11–12 Chemistry | Physical chemistry → organic mechanisms |
-| 10 | Classes 6–8 foundation (+ other subjects later) | Extends reach; reuses engines |
-| Ongoing | Free-hand recognition, offline PWA, regional languages | Behind stable simulators |
+| **1** | Shared base: Learn shell, personal board (ink/chips/widgets), units, manifests | Bottleneck — everything depends on this |
+| **0** ‖ | Pen latency ≤16 ms, offline degrade, golden/licensing notes | Parallel with Phase 1 wrap-up only; do not block UI on handwriting corpus |
+| **1b** | Scene type + assumption banner + one closed-form check | Thin physics while Phase 1 finishes — no full sims |
+| **2** | Quadratic (+ one linear/geometry slice) under ship gate; teacher-private equivalence | Vertical, not Class 9–10 maths breadth |
+| **3** | Reactions balancer to the same ship bar as quadratic | Physics Class 9–10 only after 1b is real |
+| **4** | Learner pilot (phones/laptops) on Learn + personal board | Validate before live class complexity |
+| **5** | Local-first `/join` classroom pack | Reuses board-core; adds live session |
+| **6** | School pilot | Measure recognition errors and unused chips |
+| **7** | Class 11–12 Mathematics | After pilots show what teachers use |
+| **8** | Class 11–12 Physics | Mechanics → EM/optics → modern |
+| **9** | Class 11–12 Chemistry | Physical chemistry → organic mechanisms |
+| **10** | Classes 6–8 foundation | Extends reach; reuses engines |
 
 ## Phase 1 exit criteria (platform)
 
 - `/learn/[topicId]` usable at 360px and 1280px  
 - `/board` personal blackboard: ink, chips (confirm-to-open), AI on/off, widget host  
 - Pointer + keyboard parity for sliders, drags, value entry, chip confirm  
-- Variable/unit model with dimension check  
+- Variable/unit model with dimension check **in the UI**  
+- Select tool: hit-test, move, delete (keyboard + pointer)  
 - One sample widget from each engine stub (graph, scene, molecule)  
 - Chapter manifest loader (no hardcoded chapter UI)  
 
-## Phase 2–3 exit criteria (board-exam core)
+## Phase 0 exit criteria (spikes)
 
-- All Class 9–10 maths chapters ship under the topic schema ship gate  
-- Chemistry and Physics Class 9–10 slices as in the web plan  
+- Ink path coalesces pointer samples; latency harness documents ≤16 ms budget  
+- Offline degrade: SW app shell + banner; explain refuses offline  
+- Licensing notes recorded for future SymPy/RDKit WASM  
+
+## Phase 1b exit criteria (thin physics)
+
+- Shared `SceneDescription` type  
+- Assumption banner driven by scene flags  
+- Inclined-plane closed-form + residual check (no full RK4 yet)  
+
+## Phase 2–3 exit criteria (verticals, not breadth)
+
+- Class 10 Quadratic ships under the topic schema ship gate (`status: "shipped"`)  
+- One linear + one geometry slice under the same gate discipline  
+- Teacher-private equivalence API (not student scoreboards)  
+- Class 10 Reactions balancer ships to the same bar  
 - Golden tests green for shipped NCERT worked examples  
-- Practice + personal progress for shipped topics  
+- Class 9–10 maths **inventory** remains the target catalogue — not the next sprint  
 
-## Phase 5 exit criteria (classroom)
+## Phase 4–6 exit criteria
 
-- Teacher `/class/board` projection-ready with live chips and assumption banner  
-- `/join` Predict votes and Check-it on student phones  
-- Lesson planner sequence + class replay/notes  
-- School-scoped weak-topic report  
+- Phase 4: `/progress` learner-pilot path on phones/laptops before classroom infra  
+- Phase 5: `/class/board` + `/join` local-first Predict votes  
+- Phase 6: `/school` admin stub; school-scoped reports only  
 
 ## Accuracy rules
 
@@ -129,8 +150,9 @@ Learn, personal blackboard, and classroom board architecture: [`architecture/web
 
 ## Immediate next engineering work
 
-1. Scaffold Next.js with `/browse`, `/learn/[topicId]`, and `/board`.  
-2. Implement Phase 1: Learn shell + personal board-core + input-kit + manifests.  
-3. First verticals: **Class 10 Quadratic Equations** and **Class 10 Chemical Reactions and Equations**.  
-4. Golden-test harness for those chapters.  
-5. Expand Class 9–10 maths; add classroom live pack after learner pilot.
+1. ~~Scaffold Next.js with `/browse`, `/learn/[topicId]`, and `/board`.~~  
+2. ~~Phase 1 platform base + Phase 0 spikes + Phase 1b closed-form.~~  
+3. ~~Quadratic + Reactions verticals under ship gate; linear/geometry slice.~~  
+4. Run learner pilot (Phase 4) on phones/laptops — Learn + personal board.  
+5. Harden local-first classroom pack only after pilot evidence.  
+6. Do **not** pull forward: cloud sync, Devanagari ink, free-hand circuits/organics, marketplace, panel matrix, onboarding.

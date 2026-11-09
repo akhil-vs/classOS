@@ -28,9 +28,21 @@ Every ClassOS chapter topic is packaged as a data-driven module. Curriculum chan
   ],
   "engines": ["cas", "graph"],
   "goldenTests": ["ncert.ex.4.3.q1", "cbse.2024.set1.q..."],
-  "languages": ["en", "hi"]
+  "languages": ["en", "hi"],
+  "shipGate": {
+    "syllabusValidated": true,
+    "syllabusYear": "2025-26",
+    "teacherReviewed": true,
+    "qaTouchVerified": true,
+    "qaKeyboardVerified": true,
+    "assumptionsPresent": true,
+    "goldenIds": ["ncert.ex.4.3.q1"]
+  }
 }
 ```
+
+`status: "shipped"` is only valid when `shipGate` is complete and every `goldenTests` id is listed on `goldenIds` (enforced by `@classos/curriculum` `evaluateShipGate`).
+
 
 ## Pedagogical contract
 

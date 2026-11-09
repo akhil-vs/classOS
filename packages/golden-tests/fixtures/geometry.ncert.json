@@ -1,0 +1,9 @@
+[
+  {
+    "id": "ncert.geometry.distance.3-4-5",
+    "source": "Class 10 coordinate geometry — distance 3-4-5",
+    "topicId": "math.10.coordinate-geometry.distance",
+    "input": { "x1": 0, "y1": 0, "x2": 3, "y2": 4 },
+    "expected": { "distance": 5 }
+  }
+]

@@ -59,6 +59,9 @@ export default function HomePage() {
         <Link href="/board" style={secondaryBtn}>
           Personal board
         </Link>
+        <Link href="/progress" style={secondaryBtn}>
+          Progress
+        </Link>
       </div>
 
       <div
@@ -74,6 +77,7 @@ export default function HomePage() {
           label="Reference modules"
           value={String(health.implementedTopics)}
         />
+        <Stat label="Shipped" value={String(health.shippedTopics)} />
         <Stat label="Languages" value="EN · HI" />
       </div>
     </main>

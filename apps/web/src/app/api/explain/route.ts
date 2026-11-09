@@ -1,6 +1,8 @@
 import { explainBalanceTemplate, type BalanceResult } from "@classos/engines-chem";
 import {
+  explainLinearTemplate,
   explainQuadraticTemplate,
+  type LinearSolution,
   type QuadraticSolution,
 } from "@classos/engines-math";
 import { NextResponse } from "next/server";
@@ -17,8 +19,15 @@ export async function POST(request: Request) {
 
   const result = body.engineResult as
     | QuadraticSolution
+    | LinearSolution
     | BalanceResult
-    | { templateId?: string; verified?: boolean; steps?: string[]; equation?: string; refused?: string }
+    | {
+        templateId?: string;
+        verified?: boolean;
+        steps?: string[];
+        equation?: string;
+        refused?: string;
+      }
     | undefined;
 
   if (!result) {
@@ -28,7 +37,7 @@ export async function POST(request: Request) {
     );
   }
 
-  if ("numericCheck" in result) {
+  if ("nature" in result && "discriminant" in result) {
     const explained = explainQuadraticTemplate(result);
     if (!explained.verified) {
       return NextResponse.json({
@@ -52,6 +61,26 @@ export async function POST(request: Request) {
       templateId: explained.templateId,
       verified: true,
     });
+  }
+
+  if ("kind" in result && "numericCheck" in result && !("nature" in result)) {
+    const linear = result as LinearSolution;
+    if (!linear.numericCheck.ok) {
+      return NextResponse.json({
+        prose:
+          linear.numericCheck.warning ??
+          "I will not show an answer — checks disagree.",
+        verified: false,
+      });
+    }
+    const prose = [
+      `Using verified linear CAS for ${body.topicId ?? "linear"}.`,
+      "",
+      ...explainLinearTemplate(linear)
+        .split("\n")
+        .map((step, index) => `${index + 1}. ${step}`),
+    ].join("\n");
+    return NextResponse.json({ prose, verified: true });
   }
 
   if ("templateId" in result && result.templateId === "chem.balance.v1") {

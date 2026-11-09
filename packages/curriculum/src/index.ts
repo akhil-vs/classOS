@@ -2,6 +2,8 @@ export type {
   BrowseIndex,
   ChapterSummary,
   Misconception,
+  ShipGate,
+  ShipGateEvaluation,
   StudentInput,
   Subject,
   TopicMode,
@@ -16,4 +18,11 @@ export {
   getTopicById,
   getTopicsByChapter,
 } from "./loader";
+export { assertShippedConsistent, evaluateShipGate } from "./shipGate";
 export { inventory, inventoryCounts, listInventoryChapters } from "./inventory";
+export {
+  buildOfflineStatus,
+  offlineBanner,
+  type ManifestCacheEntry,
+  type OfflineDegradeStatus,
+} from "./offlineCache";

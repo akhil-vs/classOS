@@ -1,0 +1,12 @@
+[
+  {
+    "id": "physics.incline.30deg.g10",
+    "source": "Phase 1b closed-form incline",
+    "topicId": "demo.scene.inclined-plane",
+    "input": { "massKg": 2, "angleDeg": 30, "g": 10, "frictionless": true },
+    "expected": {
+      "parallel": 10,
+      "acceleration": 5
+    }
+  }
+]

@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@classos/board-core": "workspace:*",
+    "@classos/class-live": "workspace:*",
     "@classos/curriculum": "workspace:*",
     "@classos/engines-chem": "workspace:*",
     "@classos/engines-math": "workspace:*",
+    "@classos/engines-physics": "workspace:*",
     "@classos/input-kit": "workspace:*",
     "@classos/topic-ui": "workspace:*",
     "@classos/ui": "workspace:*",

@@ -1,6 +1,6 @@
 import type { TopicModule } from "../types";
 
-/** Engine stub demos used by Phase 1 exit criteria. */
+/** Engine stub demos used by Phase 1 / 1b exit criteria. */
 export const stubTopics: TopicModule[] = [
   {
     id: "demo.graph.function",
@@ -28,21 +28,38 @@ export const stubTopics: TopicModule[] = [
     subject: "physics",
     classLevel: 9,
     chapter: "Demo Widgets",
-    topic: "Inclined plane scene stub",
+    topic: "Inclined plane (Phase 1b closed-form)",
     syllabusYear: "2025-26",
     status: "in_progress",
     studentInput: {
-      touch: ["drag angle handle"],
-      pointerKeyboard: ["type angle degrees", "arrow-adjust"],
+      touch: ["drag angle handle", "mass quantity field"],
+      pointerKeyboard: ["type angle degrees", "arrow-adjust", "type mass kg"],
     },
-    boardResponse: "Block on incline with force overlay",
-    understandingGoal: "Widget host can mount a physics scene",
-    modes: ["see", "build"],
-    misconceptions: [],
-    engines: ["scene"],
-    goldenTests: [],
+    boardResponse:
+      "Block on incline with F∥, N, a from closed form + residual check",
+    understandingGoal:
+      "Scene type + assumption banner + closed-form verification before full sims",
+    modes: ["see", "build", "check"],
+    misconceptions: [
+      {
+        error: "Normal force equals weight on an incline",
+        demo: "Compare N = mg cosθ with mg as angle changes",
+      },
+    ],
+    engines: ["scene", "closed-form"],
+    goldenTests: ["physics.incline.30deg.g10"],
     languages: ["en", "hi"],
     widget: "scene",
+    shipGate: {
+      syllabusValidated: false,
+      syllabusYear: "2025-26",
+      syllabusNote: "Phase 1b thin spike — not a Class 9–10 physics ship",
+      teacherReviewed: false,
+      qaTouchVerified: true,
+      qaKeyboardVerified: true,
+      assumptionsPresent: true,
+      goldenIds: ["physics.incline.30deg.g10"],
+    },
   },
   {
     id: "demo.molecule.water",
