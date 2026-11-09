@@ -63,12 +63,14 @@ packages/ui              Tokens + shared chrome
 
 ## Build order (summary)
 
+0. Spikes: handwriting corpus, pen latency, offline degrade, golden-set design  
 1. Shared Learn shell + personal blackboard base  
+1b. Physics foundations in parallel (units, scene description, assumption banner)  
 2. Class 9–10 Mathematics  
 3. Class 9–10 Chemistry, then Physics  
 4. Learner pilot  
-5. Classroom live board + `/join` + school admin  
+5. Local-first classroom live board + `/join` + school admin  
 6. Classroom pilot  
 7–10. Classes 11–12, then 6–8 foundation  
 
-Validate each chapter against the current CBSE syllabus before development starts.
+Validate each chapter against the current CBSE syllabus before development starts. See [`docs/PRODUCT_PLAN.md`](docs/PRODUCT_PLAN.md) for product laws and exit criteria.

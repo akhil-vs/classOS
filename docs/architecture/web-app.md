@@ -14,6 +14,8 @@ Related: [`../PRODUCT_PLAN.md`](../PRODUCT_PLAN.md) · [`engines.md`](./engines.
 
 What is written or entered is recognised; the board responds with a verified interactive demonstration; the student leaves with the misconception fixed. Concept before calculation. CAS, simulators and curated databases calculate; the AI explains and never invents answers. A human stays in control — recognition appears as chips and nothing opens unless the teacher or student confirms it.
 
+Product laws (faithful transcription, suggest-only / no auto-act, teacher-private equivalence, offline degrade, local-first classroom): [`../PRODUCT_PLAN.md`](../PRODUCT_PLAN.md). Engine contracts: [`engines.md`](./engines.md).
+
 ## Product modes at a glance
 
 | Mode | Primary user | Device | Board behaviour |
@@ -134,12 +136,16 @@ On phones: tool rail collapses to a bottom sheet; chips stack above the tray; te
 
 ### Behaviour
 
-- **AI on:** ink/typed input → recognition chips → student confirms → widget/solver opens.  
-- **AI off (plain board):** ink and manual template insert only; no chips.  
+- **AI on:** ink/typed input → recognition chips (suggest / preview only) → student confirms → widget/solver opens. Never auto-act; never silently rewrite strokes (faithful transcription).  
+- **AI off (plain board):** ink and manual template insert only; no chips — always one control away.  
+- **Persistent tools:** pen, eraser, colour, undo stay reachable; undo covers AI chip accept/reject as well as ink.  
 - **Show the law:** governing formula overlay with live substituted values.  
+- **Reactive links:** when a constant drives a plot or result, show a thin connector or coloured halo; unlink / freeze available; cycle and unit mismatches show a clear message.  
 - **Misconception cards:** optional side card when a known error pattern is detected or topic is linked.  
+- **Teacher-private equivalence (classroom / teacher role):** CAS “line N does not follow from line N−1” appears on a private channel only — never as public-board annotations.  
 - **Record:** stroke + widget timeline for later replay and notes.  
-- **Correction loop:** wrong recognition fixed in one tap/click; improves that user’s future chips.
+- **Correction loop:** wrong recognition fixed in one tap/click; improves that user’s future chips.  
+- **Offline degrade:** cached manifests and on-device engines keep widgets/Solve usable; if recognition is unavailable, show an explicit message and keep plain board + templates working.
 
 ### Flows
 
@@ -151,7 +157,7 @@ On phones: tool rail collapses to a bottom sheet; chips stack above the tray; te
 
 ## 3. Classroom board
 
-Teacher-led live board for a real class. Reuses the personal blackboard engine; adds session sync, projection layout, and student join.
+Teacher-led live board for a real class. Reuses the personal blackboard engine; adds session sync, projection layout, and student join. Prefer a **local-first hub**: the teacher device hosts the live session on the classroom network; `/join` carries only votes and Check-it answers until post-pilot cloud sync.
 
 ### Surfaces
 
@@ -182,13 +188,14 @@ Student `/join` on phones: compact vote / answer UI only — not a second full b
 ### Classroom behaviour
 
 1. **Scene / ink pipeline** — teacher writes or picks a template; system builds board state; simulators/CAS respond.  
-2. **Teacher in control** — chips beside writing; nothing opens unless tapped/clicked.  
+2. **Teacher in control** — chips beside writing; nothing opens unless tapped/clicked (suggest-only; no auto-act).  
 3. **Predict** — board freezes; students vote via `/join` (or hands-up); then reveal.  
 4. **Assumption banner** — textbook idealisations visible; teacher can toggle realism.  
 5. **Blackboard-only** — AI layer off for a plain teaching board.  
 6. **Record and replay** — strokes, widgets, optional voice → class notes + absentee replay.  
 7. **Recognition correction** — one-tap fix; teacher-specific improvement over time.  
-8. **Weak-topic report** — per student/class, private to the school (DPDP Act 2023).
+8. **Weak-topic report** — per student/class, private to the school (DPDP Act 2023); keep student PII minimal.  
+9. **Local-first hub** — teacher device is the session hub; defer full student board sync and heavy accounts until after classroom pilot.
 
 ### Classroom flows
 
@@ -223,8 +230,8 @@ Student `/join` on phones: compact vote / answer UI only — not a second full b
 | Realtime | WebSocket / SSE for live class + `/join` | Predict votes, presence, pushed Check-it |
 | Maths / Physics / Chem engines | SymPy WASM, TS sims, RDKit.js | Same engines in all three modes |
 | Heavy WASM fallback | Server engine API | Low-end student phones |
-| Recognition | On-device or edge ink → latex/chem/scene chips | Confirm-to-open only |
-| Explain | Server LLM + engine tools | Never invents numeric results |
+| Recognition | On-device or edge ink → latex/chem/scene chips | Confirm-to-open only; offline may disable recognition |
+| Explain | Server LLM + engine tools | Free-form only; CAS/sim result always shown beside; exam steps from localised templates |
 | Data | Postgres | Users, schools, sessions, replays, reports |
 | Auth | Learner accounts + teacher/school roles | DPDP-aligned |
 | PWA | Installable student app | Home-screen Learn / join |
@@ -252,9 +259,10 @@ Student `/join` on phones: compact vote / answer UI only — not a second full b
 | Runs on device | Runs on server |
 | --- | --- |
 | Learn UI, board ink, most CAS/sims | Auth, tenancy, replays, school reports |
-| Local two-path checks when possible | Live class fan-out; LLM explain |
-| Manifest cache | Content publish; reaction KB |
+| Local two-path checks when possible | Live class fan-out (when not on LAN hub); LLM explain |
+| Manifest cache + offline PWA shell | Content publish; reaction KB |
 | Personal board drafts | Aggregate weak-topic analytics |
+| Classroom hub (teacher device) + `/join` votes | Optional cloud sync of class sessions after pilot |
 
 ## Monorepo layout (proposed)
 
@@ -321,50 +329,59 @@ Board state is event-sourced (ink + widget ops) so personal and class replay sta
 | Laptop Learn / personal board | Split or tool-rail layout from ~900 CSS px |
 | Classroom panel | 16:9 / 16:10; scales to 1920×1080 minimum |
 | Input parity | Required actions work touch and mouse/keyboard |
-| Ink latency | &lt; 16 ms on mid-range tablets (personal + classroom) |
-| Join latency | Vote appears on teacher board &lt; 1 s on school Wi-Fi |
+| Ink latency | &lt; 16 ms pen-to-ink on mid-range tablets (personal + classroom); separate from recognition RTT |
+| Offline | Degraded mode: cached manifests/engines; plain board + templates; recognition fails closed with a message |
+| Join latency | Vote appears on teacher board &lt; 1 s on school Wi-Fi / LAN hub |
 | Bundle | Lazy engines per subject; lean Learn first paint |
 | Accessibility | Focus order, keyboard-complete Learn, captions, text size |
-| Language | `en` + `hi` first |
-| Privacy | Learner progress private; class reports school-only (DPDP) |
-| Accuracy | Chapter ship gate = goldens + subject-teacher review |
-| QA matrix | Playwright: phone, desktop, and board projection width |
+| Language | `en` + `hi` first (UI + step templates); regional handwriting later |
+| Privacy | Learner progress private; class reports school-only (DPDP); minimal student PII on `/join` |
+| Accuracy | Split gates: recognition / solution correctness / step-format; goldens + subject-teacher review |
+| QA matrix | Playwright: phone, desktop, and board projection width; panel/vendor touch-frame matrix later |
 
 ## Security & safety
 
-- Recognition never mutates the board without explicit confirm (student or teacher).  
+- Recognition never mutates the board without explicit confirm (student or teacher); no auto-act.  
+- Faithful transcription: never silently correct ink.  
+- Equivalence failures stay teacher-private.  
 - Chemistry refuses out-of-curriculum products; hazardous demos virtual only.  
-- LLM sandboxed to tool-verified answers.  
+- LLM sandboxed to tool-verified answers; exam steps from localised templates only.  
 - School data isolation; no cross-school leakage.  
 - Join codes expire with the live session; students cannot drive the teacher board by default.
 
 ## Web delivery phases
 
+Aligns with [`../PRODUCT_PLAN.md`](../PRODUCT_PLAN.md) Phases 0–10 (calendar weeks are indicative engineering slices, not a substitute for the product phase table).
+
 | Milestone | Delivers |
 | --- | --- |
-| **W0 – Skeleton** | Next.js app, browse, auth stub, manifest loader |
-| **W1 – Learn + board base** | `/learn`, `/board` ink+chips+widget host, input-kit, 3 stubs, AI on/off |
-| **W2 – Maths vertical** | Class 10 Quadratics on Learn + board; CAS; golden CI; practice |
+| **W0 – Spikes + skeleton** | Latency / offline degrade spikes; Next.js app, browse, auth stub, manifest loader |
+| **W1 – Learn + board base (+ 1b)** | `/learn`, `/board` ink+chips+widget host, input-kit, 3 stubs, AI on/off, units + scene foundations |
+| **W2 – Maths vertical** | Class 10 Quadratics on Learn + board; CAS; teacher-private equivalence; golden CI; practice |
 | **W3 – Chem vertical** | Class 10 Reactions; balancer; linked views |
-| **W4 – Progress & personal replay** | `/progress`, Hindi, PWA, personal `/replay`, low-end fallback |
-| **W5 – Classroom pack** | `/class/board`, `/class/plan`, `/join`, live sync, school admin, class replay |
+| **W4 – Progress & personal replay** | `/progress`, Hindi step templates, PWA offline shell, personal `/replay`, low-end fallback |
+| **W5 – Classroom pack** | `/class/board`, `/class/plan`, local-first `/join`, school admin, class replay |
 | **W6 – Pilots** | Learner pilot (phones/laptops) + classroom pilot in a few schools |
 | **W7+** | Class 9–10 breadth, then 11–12, physics depth, foundation 6–8 |
 
 ## Immediate implementation order
 
-1. Scaffold `apps/web` with `/browse`, `/learn/[topicId]`, and `/board`.  
-2. `packages/input-kit` + `board-core` (ink, chips, AI on/off) shared by personal board.  
-3. `packages/curriculum` from inventory + topic schema.  
-4. Widget stubs on both Learn and Board at 360px and 1280px (and 1920 width smoke test).  
-5. Class 10 Quadratics vertical (typed controls + optional ink).  
-6. Explain stub + NCERT goldens.  
-7. Chemical Reactions vertical.  
-8. Only after W4: live classroom (`class-live`, `/join`, projection chrome).
+1. Phase 0 spikes: pen latency, offline degrade, golden-set/licensing notes.  
+2. Scaffold polish: `/browse`, `/learn/[topicId]`, `/board`.  
+3. `packages/input-kit` + `board-core` (ink, chips, AI on/off, faithful transcription) shared by personal board.  
+4. Phase 1b in parallel: units, scene description, assumption banner, verification harness.  
+5. `packages/curriculum` from inventory + topic schema.  
+6. Widget stubs on both Learn and Board at 360px and 1280px (and 1920 width smoke test).  
+7. Class 10 Quadratics vertical (typed controls + optional ink + equivalence).  
+8. Explain stub + NCERT goldens (localised step templates).  
+9. Chemical Reactions vertical.  
+10. Only after W4: local-first classroom (`class-live`, `/join`, projection chrome).
 
 ## Out of scope for early milestones
 
 - Free-hand organic/circuit recognition as the default phone path (templates first).  
 - Biology and other subjects.  
 - Automated theorem proving.  
-- Students remotely controlling the teacher’s live board (view/vote/answer only unless teacher enables).
+- Students remotely controlling the teacher’s live board (view/vote/answer only unless teacher enables).  
+- Cloud-scale student board sync before classroom pilot.  
+- Auto-act recognition (chips may auto-*suggest* only).

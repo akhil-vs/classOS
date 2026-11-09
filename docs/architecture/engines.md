@@ -2,35 +2,45 @@
 
 Source of truth for calculations and simulations: CAS, physics simulators, and curated chemistry databases. The AI layer explains and never invents numerical results.
 
-## Shared platform base (Phase 1)
+Product laws that constrain engines: [`../PRODUCT_PLAN.md`](../PRODUCT_PLAN.md) (faithful transcription, suggest-only chips, teacher-private equivalence, localised step templates, Phase 1b physics foundations).
+
+## Shared platform base (Phase 1 + 1b)
 
 | Capability | Requirement |
 | --- | --- |
 | Input parity | Pointer Events + keyboard: every required action works on touch and on mouse/keyboard |
 | Board core | Shared ink + recognition chips + widget host for personal `/board` and classroom `/class/board` |
 | Optional ink on Learn | Finger/stylus/mouse drawing optional; templates and typed entry default on phones |
-| Confirm-to-open | Recognition chips never open a widget until the student or teacher confirms |
+| Faithful transcription | Recognition never silently rewrites strokes; chips propose intents only |
+| Confirm-to-open | Recognition chips never open a widget until the student or teacher confirms; no auto-act |
 | Widget framework | Reusable interactive modules (graphs, scenes, molecule views, assessment cards) |
-| Variables + units | Every quantity carries units; dimension checker for formula validation |
+| Variables + units | Every quantity carries units; dimension checker for formula validation (Phase 1 / 1b) |
+| Reactive links | Linked constants ↔ plots/results show a visible connector or halo; unlink and freeze supported; cycles and unit mismatches surface a clear error — no silent global recompute |
 | Modes | See it → Predict → Build it → Derive it → Solve it → Check it (self-paced or teacher-led) |
 | Content as data | Chapter manifests update without code changes |
 | Device fallback | Heavy WASM may run on server for low-end phones; answers must match on-device engines |
+| Offline degrade | Cached manifests and on-device engines keep Solve/Check usable; recognition may be unavailable with an explicit message |
 
 ## Mathematics engine
 
 | Component | Approach |
 | --- | --- |
 | Exact algebra | Browser CAS (SymPy/WASM) for exact arithmetic, solving, calculus, matrices |
-| Step generator | Rule-based CBSE-style templates reviewed by CBSE subject teachers; AI only phrases steps |
+| Step generator | Rule-based CBSE-style templates reviewed by CBSE subject teachers; **localised template strings** per language (`en`, `hi`, …) — do not LLM-translate exam steps |
+| Explain / Q&A | LLM may narrate only with the CAS result shown beside the explanation |
 | Dynamic geometry | Constraint solver so dragged figures keep relations (JSXGraph or similar) |
 | Two-path verification | Symbolic + numerical check; disagreement flagged, not shown as truth |
+| Equivalence checking | Separate from transcription: CAS checks whether each written line follows from the previous; results are **teacher-private** (never projected as public-board corrections) |
 | Proof support | Line-by-line algebraic validity checking; no full automated theorem proving |
 
 ## Physics engine
 
+Phase **1b** (parallel with Phase 1) lands the shared foundations before Class 9–10 Physics content (Phase 3) and Class 11–12 depth (Phase 8).
+
 | Domain | Approach |
 | --- | --- |
 | Pipeline | Scene builder → shared scene description → simulator → overlays |
+| Foundations (1b) | Unit system, scene-description type, assumption banner, closed-form verification harness |
 | Mechanics | Custom RK4 for textbook accuracy; rigid-body only when needed |
 | Circuits | Modified nodal analysis; RC/LR transient; phasors for AC |
 | Fields | GPU grid computation for E/B/potential maps |
