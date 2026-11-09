@@ -1,11 +1,23 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { useBoardStore } from "./store";
 
+function drawParabola() {
+  const id = useBoardStore.getState().beginStroke({ x: 0, y: 95 });
+  for (let i = 1; i < 16; i++) {
+    const x = i * 12;
+    const y = 0.008 * (x - 90) ** 2 + 30;
+    useBoardStore.getState().extendStroke(id, { x, y });
+  }
+  useBoardStore.getState().endStroke(id);
+  return id;
+}
+
 describe("board store", () => {
   beforeEach(() => {
     useBoardStore.getState().clearBoard();
     useBoardStore.getState().setAiEnabled(true);
     useBoardStore.getState().setUnitSystem("si");
+    useBoardStore.getState().setTopicId(undefined);
   });
 
   it("records strokes and can undo", () => {
@@ -18,25 +30,29 @@ describe("board store", () => {
   });
 
   it("requires chip confirm before opening a widget", () => {
-    const id = useBoardStore.getState().beginStroke({ x: 0, y: 0 });
-    for (let i = 1; i < 12; i++) {
-      useBoardStore.getState().extendStroke(id, { x: i * 12, y: 20 });
-    }
-    useBoardStore.getState().endStroke(id);
-    expect(useBoardStore.getState().chips.length).toBeGreaterThan(0);
+    drawParabola();
+    expect(useBoardStore.getState().chips).toHaveLength(1);
     expect(useBoardStore.getState().widgets).toHaveLength(0);
     const chipId = useBoardStore.getState().chips[0]!.id;
     useBoardStore.getState().confirmChip(chipId);
     expect(useBoardStore.getState().widgets).toHaveLength(1);
   });
 
+  it("does not stack noisy chips for repeated similar strokes", () => {
+    drawParabola();
+    drawParabola();
+    expect(useBoardStore.getState().chips).toHaveLength(1);
+  });
+
   it("suppresses chips when AI is off", () => {
     useBoardStore.getState().setAiEnabled(false);
-    const id = useBoardStore.getState().beginStroke({ x: 0, y: 0 });
-    for (let i = 1; i < 12; i++) {
-      useBoardStore.getState().extendStroke(id, { x: i * 12, y: 20 });
-    }
-    useBoardStore.getState().endStroke(id);
+    drawParabola();
+    expect(useBoardStore.getState().chips).toHaveLength(0);
+  });
+
+  it("scopes recognition to the active topic", () => {
+    useBoardStore.getState().setTopicId("chem.10.chemical-reactions.balancing");
+    drawParabola();
     expect(useBoardStore.getState().chips).toHaveLength(0);
   });
 

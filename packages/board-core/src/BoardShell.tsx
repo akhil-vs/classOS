@@ -2,18 +2,29 @@
 
 import { useKeyboardMap } from "@classos/input-kit";
 import { BrandMark } from "@classos/ui";
-import type { ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { ChipLayer } from "./ChipLayer";
 import { InkCanvas } from "./InkCanvas";
 import { useBoardStore } from "./store";
+import {
+  templatesForTopic,
+  type TemplateKind,
+  type TemplateSpec,
+} from "./templates";
 import type { BoardWidgetInstance } from "./types";
 
 export function BoardShell({
   renderWidget,
   assumption,
+  topicWidget,
+  unitsApply = true,
 }: {
   renderWidget?: (widget: BoardWidgetInstance) => ReactNode;
   assumption?: string;
+  /** Active Learn topic widget — scopes the template rail for the pilot. */
+  topicWidget?: TemplateKind | string;
+  /** False for dimensionless algebra / equation topics. */
+  unitsApply?: boolean;
 }) {
   const tool = useBoardStore((s) => s.tool);
   const aiEnabled = useBoardStore((s) => s.aiEnabled);
@@ -30,6 +41,12 @@ export function BoardShell({
   const selectWidget = useBoardStore((s) => s.selectWidget);
   const removeWidget = useBoardStore((s) => s.removeWidget);
   const moveSelectedStrokes = useBoardStore((s) => s.moveSelectedStrokes);
+  const [showMoreTemplates, setShowMoreTemplates] = useState(false);
+
+  const { primary, secondary } = useMemo(
+    () => templatesForTopic(topicWidget),
+    [topicWidget],
+  );
 
   useKeyboardMap({
     z: (event) => {
@@ -100,13 +117,34 @@ export function BoardShell({
       >
         <BrandMark compact />
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <Toggle
-            label={`Units ${unitSystem.toUpperCase()}`}
-            pressed={unitSystem === "si"}
-            onClick={() =>
-              setUnitSystem(unitSystem === "si" ? "classroom" : "si")
-            }
-          />
+          {unitsApply ? (
+            <Toggle
+              label={
+                unitSystem === "si" ? "Units: SI (m, kg)" : "Units: classroom (cm, g)"
+              }
+              pressed={unitSystem === "si"}
+              title="Applies to dimensioned physics quantities only — not to dimensionless coefficients."
+              onClick={() =>
+                setUnitSystem(unitSystem === "si" ? "classroom" : "si")
+              }
+            />
+          ) : (
+            <span
+              title="This topic uses dimensionless coefficients / stoichiometric counts."
+              style={{
+                minHeight: "var(--co-hit)",
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "0 14px",
+                borderRadius: 999,
+                border: "1px solid var(--co-border)",
+                color: "var(--co-ink-muted)",
+                fontSize: 13,
+              }}
+            >
+              Units: N/A (dimensionless)
+            </span>
+          )}
           <Toggle
             label={`AI ${aiEnabled ? "on" : "off"}`}
             pressed={aiEnabled}
@@ -119,7 +157,7 @@ export function BoardShell({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "minmax(72px, 96px) 1fr",
+          gridTemplateColumns: "minmax(72px, 110px) 1fr",
           minHeight: 0,
         }}
         className="board-layout"
@@ -151,41 +189,41 @@ export function BoardShell({
               margin: "6px 0",
             }}
           />
-          <RailButton
-            label="Graph"
-            active={false}
-            onClick={() => insertTemplate("graph")}
-          />
-          <RailButton
-            label="Scene"
-            active={false}
-            onClick={() => insertTemplate("scene")}
-          />
-          <RailButton
-            label="Molecule"
-            active={false}
-            onClick={() => insertTemplate("molecule")}
-          />
-          <RailButton
-            label="Quadratic"
-            active={false}
-            onClick={() => insertTemplate("quadratic")}
-          />
-          <RailButton
-            label="Linear"
-            active={false}
-            onClick={() => insertTemplate("linear")}
-          />
-          <RailButton
-            label="Geometry"
-            active={false}
-            onClick={() => insertTemplate("geometry")}
-          />
-          <RailButton
-            label="Balance"
-            active={false}
-            onClick={() => insertTemplate("balancer")}
-          />
+          <div
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: "var(--co-ink-muted)",
+              padding: "0 4px",
+            }}
+          >
+            Pilot
+          </div>
+          {primary.map((item) => (
+            <TemplateButton
+              key={item.kind}
+              item={item}
+              onClick={() => insertTemplate(item.kind)}
+            />
+          ))}
+          {secondary.length > 0 && (
+            <>
+              <RailButton
+                label={showMoreTemplates ? "Less" : "More"}
+                active={showMoreTemplates}
+                onClick={() => setShowMoreTemplates((value) => !value)}
+              />
+              {showMoreTemplates &&
+                secondary.map((item) => (
+                  <TemplateButton
+                    key={item.kind}
+                    item={item}
+                    onClick={() => insertTemplate(item.kind)}
+                  />
+                ))}
+            </>
+          )}
         </aside>
 
         <section
@@ -223,6 +261,7 @@ export function BoardShell({
             </div>
           )}
           <div
+            className="board-widget-stack"
             style={{
               position: "absolute",
               right: 16,
@@ -310,10 +349,12 @@ export function BoardShell({
       >
         <span>
           {aiEnabled
-            ? "AI on — chips need confirm before anything opens"
+            ? "AI on — confident chips only; confirm before opening"
             : "Blackboard only — ink and templates, no chips"}
           {" · "}
-          Units {unitSystem.toUpperCase()} · quantities carry dimensions
+          {unitsApply
+            ? `Units ${unitSystem === "si" ? "SI" : "classroom"} for dimensioned quantities`
+            : "No unit system — coefficients / counts are dimensionless"}
         </span>
         <span>
           {widgets.length} widget(s) · Select + Delete · Ctrl/Cmd+Z undo
@@ -330,10 +371,32 @@ export function BoardShell({
             overflow-x: auto;
             border-right: none !important;
             border-bottom: 1px solid var(--co-border);
+            align-items: stretch;
+          }
+          .board-widget-stack {
+            position: relative !important;
+            right: auto !important;
+            top: auto !important;
+            width: auto !important;
+            max-height: none !important;
+            margin: 12px;
+            z-index: 1 !important;
           }
         }
       `}</style>
     </div>
+  );
+}
+
+function TemplateButton({
+  item,
+  onClick,
+}: {
+  item: TemplateSpec;
+  onClick: () => void;
+}) {
+  return (
+    <RailButton label={item.label} active={false} onClick={onClick} />
   );
 }
 
@@ -360,6 +423,7 @@ function RailButton({
         color: "var(--co-ink)",
         cursor: "pointer",
         padding: "0 8px",
+        whiteSpace: "nowrap",
       }}
     >
       {label}
@@ -371,15 +435,18 @@ function Toggle({
   label,
   pressed,
   onClick,
+  title,
 }: {
   label: string;
   pressed: boolean;
   onClick: () => void;
+  title?: string;
 }) {
   return (
     <button
       type="button"
       aria-pressed={pressed}
+      title={title}
       onClick={onClick}
       style={{
         minHeight: "var(--co-hit)",

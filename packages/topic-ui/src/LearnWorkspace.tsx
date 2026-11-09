@@ -1,6 +1,12 @@
 "use client";
 
-import type { TopicMode, TopicModule } from "@classos/curriculum";
+import {
+  predictOptionsForTopic,
+  topicAssumptions,
+  topicUsesUnits,
+  type TopicMode,
+  type TopicModule,
+} from "@classos/curriculum";
 import { useKeyboardMap } from "@classos/input-kit";
 import { BrandMark, ModeTabs, modeFromShortcut } from "@classos/ui";
 import { WidgetHost } from "@classos/widgets";
@@ -33,6 +39,13 @@ export function LearnWorkspace({
         return "Quick check items generated from the live widget state.";
     }
   }, [mode]);
+
+  const predictOptions = useMemo(
+    () => predictOptionsForTopic(topic),
+    [topic],
+  );
+  const assumptions = useMemo(() => topicAssumptions(topic), [topic]);
+  const usesUnits = topicUsesUnits(topic);
 
   useKeyboardMap({
     "1": () => maybeMode("1"),
@@ -67,9 +80,15 @@ export function LearnWorkspace({
           flexWrap: "wrap",
         }}
       >
-        <div style={{ display: "grid", gap: 4 }}>
+        <div style={{ display: "grid", gap: 4, minWidth: 0 }}>
           <BrandMark compact />
-          <div style={{ color: "var(--co-ink-muted)", fontSize: 13 }}>
+          <div
+            style={{
+              color: "var(--co-ink-muted)",
+              fontSize: 13,
+              overflowWrap: "anywhere",
+            }}
+          >
             Class {topic.classLevel} · {topic.chapter} · {topic.topic}
           </div>
         </div>
@@ -90,6 +109,7 @@ export function LearnWorkspace({
             borderRight: "1px solid var(--co-border)",
             background: "var(--co-board)",
             minHeight: 320,
+            minWidth: 0,
           }}
         >
           <ModeTabs modes={topic.modes} value={mode} onChange={setMode} />
@@ -99,43 +119,57 @@ export function LearnWorkspace({
           <WidgetHost kind={topic.widget ?? "graph"} onExplain={onExplain} />
         </section>
 
-        <aside style={{ padding: 16, display: "grid", gap: 14, alignContent: "start" }}>
+        <aside
+          style={{
+            padding: 16,
+            display: "grid",
+            gap: 14,
+            alignContent: "start",
+            minWidth: 0,
+          }}
+        >
           <Block title="Understanding goal">{topic.understandingGoal}</Block>
+          <Block title="Assumptions">{assumptions}</Block>
+          <Block title="Units">
+            {usesUnits
+              ? "Dimensioned quantities — use SI or classroom units on the board; mismatched dimensions warn before calculate."
+              : "Dimensionless for this topic — coefficients / stoichiometric counts are not lengths or masses. The board hides the units toggle here so it cannot be confused with assumptions."}
+          </Block>
           <Block title="Board response">{topic.boardResponse}</Block>
           <Block title="Input parity">
             <div>Touch: {topic.studentInput.touch.join(" · ")}</div>
-            <div>Mouse/keyboard: {topic.studentInput.pointerKeyboard.join(" · ")}</div>
+            <div>
+              Mouse/keyboard: {topic.studentInput.pointerKeyboard.join(" · ")}
+            </div>
           </Block>
 
           {mode === "predict" && (
             <Block title="Predict">
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {["D > 0", "D = 0", "D < 0", "Balanced", "Not sure"].map(
-                  (option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => {
-                        setPrediction(option);
-                        setRevealed(false);
-                      }}
-                      style={{
-                        minHeight: "var(--co-hit)",
-                        padding: "0 12px",
-                        borderRadius: 999,
-                        border:
-                          prediction === option
-                            ? "1px solid var(--co-accent)"
-                            : "1px solid var(--co-border)",
-                        background: "transparent",
-                        color: "var(--co-ink)",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {option}
-                    </button>
-                  ),
-                )}
+                {predictOptions.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => {
+                      setPrediction(option);
+                      setRevealed(false);
+                    }}
+                    style={{
+                      minHeight: "var(--co-hit)",
+                      padding: "0 12px",
+                      borderRadius: 999,
+                      border:
+                        prediction === option
+                          ? "1px solid var(--co-accent)"
+                          : "1px solid var(--co-border)",
+                      background: "transparent",
+                      color: "var(--co-ink)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {option}
+                  </button>
+                ))}
               </div>
               <button
                 type="button"
@@ -192,6 +226,12 @@ export function LearnWorkspace({
           .learn-layout > section {
             border-right: none !important;
             border-bottom: 1px solid var(--co-border);
+          }
+        }
+        @media (max-width: 360px) {
+          .learn-layout section,
+          .learn-layout aside {
+            padding: 12px !important;
           }
         }
       `}</style>
