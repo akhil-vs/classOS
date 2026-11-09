@@ -1,0 +1,25 @@
+[
+  {
+    "id": "ncert.linear.single.q1",
+    "source": "Class 9/10 linear bridge — 2x + 3 = 11",
+    "topicId": "math.9.linear-equations.one-variable",
+    "kind": "single",
+    "input": { "a": 2, "b": 3, "c": 11 },
+    "expected": { "kind": "unique", "x": "4" }
+  },
+  {
+    "id": "ncert.linear.pair.q1",
+    "source": "Class 10 pair — x+y=5, x−y=1",
+    "topicId": "math.10.pair-of-linear-equations.solving",
+    "kind": "pair",
+    "input": {
+      "a1": 1,
+      "b1": 1,
+      "c1": 5,
+      "a2": 1,
+      "b2": -1,
+      "c2": 1
+    },
+    "expected": { "kind": "unique", "x": "3", "y": "2" }
+  }
+]

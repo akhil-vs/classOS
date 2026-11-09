@@ -152,7 +152,21 @@ async function BrowseInner({
                             borderBottom: "1px solid rgba(214,230,212,0.08)",
                           }}
                         >
-                          <span>{topic.topic}</span>
+                          <span>
+                            {topic.topic}
+                            <span
+                              style={{
+                                marginLeft: 8,
+                                color:
+                                  topic.status === "shipped"
+                                    ? "var(--co-accent)"
+                                    : "var(--co-ink-muted)",
+                                fontSize: 12,
+                              }}
+                            >
+                              {topic.status}
+                            </span>
+                          </span>
                           <span style={{ color: "var(--co-accent)" }}>Learn →</span>
                         </Link>
                       </li>

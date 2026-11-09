@@ -12,6 +12,7 @@
     "@classos/board-core": "workspace:*",
     "@classos/engines-chem": "workspace:*",
     "@classos/engines-math": "workspace:*",
+    "@classos/engines-physics": "workspace:*",
     "@classos/input-kit": "workspace:*",
     "@classos/ui": "workspace:*"
   },

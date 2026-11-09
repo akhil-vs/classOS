@@ -17,11 +17,19 @@ export function BoardShell({
 }) {
   const tool = useBoardStore((s) => s.tool);
   const aiEnabled = useBoardStore((s) => s.aiEnabled);
+  const unitSystem = useBoardStore((s) => s.unitSystem);
   const widgets = useBoardStore((s) => s.widgets);
+  const selectedWidgetIds = useBoardStore((s) => s.selectedWidgetIds);
+  const assumptionBanner = useBoardStore((s) => s.assumptionBanner);
   const setTool = useBoardStore((s) => s.setTool);
   const setAiEnabled = useBoardStore((s) => s.setAiEnabled);
+  const setUnitSystem = useBoardStore((s) => s.setUnitSystem);
   const undo = useBoardStore((s) => s.undo);
+  const deleteSelection = useBoardStore((s) => s.deleteSelection);
   const insertTemplate = useBoardStore((s) => s.insertTemplate);
+  const selectWidget = useBoardStore((s) => s.selectWidget);
+  const removeWidget = useBoardStore((s) => s.removeWidget);
+  const moveSelectedStrokes = useBoardStore((s) => s.moveSelectedStrokes);
 
   useKeyboardMap({
     z: (event) => {
@@ -36,7 +44,34 @@ export function BoardShell({
         undo();
       }
     },
+    Delete: () => deleteSelection(),
+    Backspace: (event) => {
+      event.preventDefault();
+      deleteSelection();
+    },
+    ArrowLeft: (event) => {
+      if (tool !== "select") return;
+      event.preventDefault();
+      moveSelectedStrokes(event.shiftKey ? -10 : -2, 0);
+    },
+    ArrowRight: (event) => {
+      if (tool !== "select") return;
+      event.preventDefault();
+      moveSelectedStrokes(event.shiftKey ? 10 : 2, 0);
+    },
+    ArrowUp: (event) => {
+      if (tool !== "select") return;
+      event.preventDefault();
+      moveSelectedStrokes(0, event.shiftKey ? -10 : -2);
+    },
+    ArrowDown: (event) => {
+      if (tool !== "select") return;
+      event.preventDefault();
+      moveSelectedStrokes(0, event.shiftKey ? 10 : 2);
+    },
   });
+
+  const banner = assumptionBanner ?? assumption;
 
   return (
     <div
@@ -60,10 +95,18 @@ export function BoardShell({
           position: "sticky",
           top: 0,
           zIndex: 5,
+          flexWrap: "wrap",
         }}
       >
         <BrandMark compact />
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <Toggle
+            label={`Units ${unitSystem.toUpperCase()}`}
+            pressed={unitSystem === "si"}
+            onClick={() =>
+              setUnitSystem(unitSystem === "si" ? "classroom" : "si")
+            }
+          />
           <Toggle
             label={`AI ${aiEnabled ? "on" : "off"}`}
             pressed={aiEnabled}
@@ -129,6 +172,16 @@ export function BoardShell({
             onClick={() => insertTemplate("quadratic")}
           />
           <RailButton
+            label="Linear"
+            active={false}
+            onClick={() => insertTemplate("linear")}
+          />
+          <RailButton
+            label="Geometry"
+            active={false}
+            onClick={() => insertTemplate("geometry")}
+          />
+          <RailButton
             label="Balance"
             active={false}
             onClick={() => insertTemplate("balancer")}
@@ -149,8 +202,9 @@ export function BoardShell({
         >
           <InkCanvas />
           <ChipLayer />
-          {assumption && (
+          {banner && (
             <div
+              role="status"
               style={{
                 position: "absolute",
                 left: 16,
@@ -162,9 +216,10 @@ export function BoardShell({
                 color: "var(--co-warn)",
                 fontSize: 13,
                 zIndex: 2,
+                maxWidth: "min(420px, calc(100% - 32px))",
               }}
             >
-              Assumptions: {assumption}
+              Assumptions: {banner}
             </div>
           )}
           <div
@@ -180,29 +235,63 @@ export function BoardShell({
               zIndex: 3,
             }}
           >
-            {widgets.map((widget) => (
-              <div
-                key={widget.id}
-                style={{
-                  borderRadius: "var(--co-radius)",
-                  border: "1px solid var(--co-border)",
-                  background: "rgba(28, 37, 48, 0.94)",
-                  boxShadow: "var(--co-shadow)",
-                  padding: 12,
-                }}
-              >
+            {widgets.map((widget) => {
+              const selected = selectedWidgetIds.includes(widget.id);
+              return (
                 <div
+                  key={widget.id}
+                  onClick={() => tool === "select" && selectWidget(widget.id)}
                   style={{
-                    fontFamily: "var(--co-font-brand)",
-                    marginBottom: 8,
-                    fontSize: 15,
+                    borderRadius: "var(--co-radius)",
+                    border: selected
+                      ? "1px solid var(--co-accent)"
+                      : "1px solid var(--co-border)",
+                    background: "rgba(28, 37, 48, 0.94)",
+                    boxShadow: "var(--co-shadow)",
+                    padding: 12,
                   }}
                 >
-                  {widget.title}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 8,
+                      marginBottom: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "var(--co-font-brand)",
+                        fontSize: 15,
+                      }}
+                    >
+                      {widget.title}
+                    </div>
+                    <button
+                      type="button"
+                      aria-label={`Dismiss ${widget.title}`}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        removeWidget(widget.id);
+                      }}
+                      style={{
+                        border: "1px solid var(--co-border)",
+                        background: "transparent",
+                        color: "var(--co-ink-muted)",
+                        borderRadius: 8,
+                        minHeight: 36,
+                        minWidth: 36,
+                        cursor: "pointer",
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  {renderWidget?.(widget)}
                 </div>
-                {renderWidget?.(widget)}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       </div>
@@ -223,9 +312,11 @@ export function BoardShell({
           {aiEnabled
             ? "AI on — chips need confirm before anything opens"
             : "Blackboard only — ink and templates, no chips"}
+          {" · "}
+          Units {unitSystem.toUpperCase()} · quantities carry dimensions
         </span>
         <span>
-          {widgets.length} widget(s) · Ctrl/Cmd+Z undo
+          {widgets.length} widget(s) · Select + Delete · Ctrl/Cmd+Z undo
         </span>
       </footer>
       <style>{`

@@ -3,7 +3,9 @@
 import type { BoardWidgetInstance } from "@classos/board-core";
 import { BalancerLab } from "./BalancerLab";
 import { FunctionGraph } from "./FunctionGraph";
+import { GeometryLab } from "./GeometryLab";
 import { InclinedPlane } from "./InclinedPlane";
+import { LinearLab } from "./LinearLab";
 import { MoleculeView } from "./MoleculeView";
 import { QuadraticLab } from "./QuadraticLab";
 
@@ -23,6 +25,10 @@ export function WidgetHost({
       return <MoleculeView />;
     case "quadratic":
       return <QuadraticLab onExplain={onExplain} />;
+    case "linear":
+      return <LinearLab onExplain={onExplain} />;
+    case "geometry":
+      return <GeometryLab />;
     case "balancer":
       return <BalancerLab onExplain={onExplain} />;
     default:

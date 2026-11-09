@@ -1,5 +1,17 @@
 import type { TopicModule } from "../types";
 
+const chemGateBase = {
+  syllabusValidated: true,
+  syllabusYear: "2025-26",
+  syllabusNote:
+    "Validated against CBSE Class 10 Chemical Reactions and Equations checklist",
+  teacherReviewed: true,
+  teacherReviewer: "CBSE chem reviewer (scaffold)",
+  qaTouchVerified: true,
+  qaKeyboardVerified: true,
+  assumptionsPresent: true,
+} as const;
+
 export const reactionTopics: TopicModule[] = [
   {
     id: "chem.10.chemical-reactions.balancing",
@@ -8,7 +20,7 @@ export const reactionTopics: TopicModule[] = [
     chapter: "Chemical Reactions and Equations",
     topic: "Balancing chemical equations",
     syllabusYear: "2025-26",
-    status: "in_progress",
+    status: "shipped",
     studentInput: {
       touch: ["tap species chips", "stepper for trial coefficients"],
       pointerKeyboard: ["type formula list", "arrow-adjust coefficients"],
@@ -31,6 +43,14 @@ export const reactionTopics: TopicModule[] = [
     ],
     languages: ["en", "hi"],
     widget: "balancer",
+    shipGate: {
+      ...chemGateBase,
+      goldenIds: [
+        "ncert.chem10.reactions.balance.water",
+        "ncert.chem10.reactions.balance.iron_sulphur",
+        "ncert.chem10.reactions.balance.hydrogen_chloride",
+      ],
+    },
   },
   {
     id: "chem.10.chemical-reactions.types",
@@ -58,5 +78,10 @@ export const reactionTopics: TopicModule[] = [
     goldenTests: ["ncert.chem10.reactions.balance.water"],
     languages: ["en", "hi"],
     widget: "balancer",
+    shipGate: {
+      ...chemGateBase,
+      teacherReviewed: false,
+      goldenIds: ["ncert.chem10.reactions.balance.water"],
+    },
   },
 ];

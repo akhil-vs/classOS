@@ -21,6 +21,19 @@ export interface StudentInput {
   boardTriggers?: string[];
 }
 
+/** Per-chapter ship gate evidence (topic-schema.md). */
+export interface ShipGate {
+  syllabusValidated: boolean;
+  syllabusYear: string;
+  syllabusNote?: string;
+  teacherReviewed: boolean;
+  teacherReviewer?: string;
+  qaTouchVerified: boolean;
+  qaKeyboardVerified: boolean;
+  assumptionsPresent: boolean;
+  goldenIds: string[];
+}
+
 export interface TopicModule {
   id: string;
   subject: Subject;
@@ -37,7 +50,15 @@ export interface TopicModule {
   engines: string[];
   goldenTests: string[];
   languages: Array<"en" | "hi">;
-  widget?: "graph" | "scene" | "molecule" | "quadratic" | "balancer";
+  widget?:
+    | "graph"
+    | "scene"
+    | "molecule"
+    | "quadratic"
+    | "balancer"
+    | "linear"
+    | "geometry";
+  shipGate?: ShipGate;
 }
 
 export interface ChapterSummary {
@@ -54,4 +75,11 @@ export interface BrowseIndex {
   subjects: Subject[];
   chapters: ChapterSummary[];
   topics: TopicModule[];
+}
+
+export interface ShipGateEvaluation {
+  topicId: string;
+  canShip: boolean;
+  missing: string[];
+  status: TopicStatus;
 }

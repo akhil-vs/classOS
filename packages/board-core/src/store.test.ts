@@ -5,6 +5,7 @@ describe("board store", () => {
   beforeEach(() => {
     useBoardStore.getState().clearBoard();
     useBoardStore.getState().setAiEnabled(true);
+    useBoardStore.getState().setUnitSystem("si");
   });
 
   it("records strokes and can undo", () => {
@@ -37,5 +38,23 @@ describe("board store", () => {
     }
     useBoardStore.getState().endStroke(id);
     expect(useBoardStore.getState().chips).toHaveLength(0);
+  });
+
+  it("selects, moves, and deletes strokes", () => {
+    const id = useBoardStore.getState().beginStroke({ x: 10, y: 10 });
+    useBoardStore.getState().extendStroke(id, { x: 20, y: 10 });
+    useBoardStore.getState().endStroke(id);
+    useBoardStore.getState().selectAt({ x: 10, y: 10 });
+    expect(useBoardStore.getState().selectedStrokeIds).toEqual([id]);
+    useBoardStore.getState().moveSelectedStrokes(5, -2);
+    const stroke = useBoardStore.getState().strokes[0]!;
+    expect(stroke.points[0]).toEqual({ x: 15, y: 8 });
+    useBoardStore.getState().deleteSelection();
+    expect(useBoardStore.getState().strokes).toHaveLength(0);
+  });
+
+  it("tracks unit system on the board", () => {
+    useBoardStore.getState().setUnitSystem("classroom");
+    expect(useBoardStore.getState().unitSystem).toBe("classroom");
   });
 });

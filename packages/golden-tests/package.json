@@ -8,8 +8,10 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@classos/curriculum": "workspace:*",
     "@classos/engines-chem": "workspace:*",
-    "@classos/engines-math": "workspace:*"
+    "@classos/engines-math": "workspace:*",
+    "@classos/engines-physics": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

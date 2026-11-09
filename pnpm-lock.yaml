@@ -13,6 +13,9 @@ importers:
       '@classos/board-core':
         specifier: workspace:*
         version: link:../../packages/board-core
+      '@classos/class-live':
+        specifier: workspace:*
+        version: link:../../packages/class-live
       '@classos/curriculum':
         specifier: workspace:*
         version: link:../../packages/curriculum
@@ -22,6 +25,9 @@ importers:
       '@classos/engines-math':
         specifier: workspace:*
         version: link:../../packages/engines-math
+      '@classos/engines-physics':
+        specifier: workspace:*
+        version: link:../../packages/engines-physics
       '@classos/input-kit':
         specifier: workspace:*
         version: link:../../packages/input-kit
@@ -88,6 +94,15 @@ importers:
         specifier: ^3.0.5
         version: 3.2.7(@types/node@22.20.5)
 
+  packages/class-live:
+    devDependencies:
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.5
+        version: 3.2.7(@types/node@22.20.5)
+
   packages/curriculum:
     devDependencies:
       typescript:
@@ -115,11 +130,8 @@ importers:
         specifier: ^3.0.5
         version: 3.2.7(@types/node@22.20.5)
 
-  packages/golden-tests:
+  packages/engines-physics:
     dependencies:
-      '@classos/engines-chem':
-        specifier: workspace:*
-        version: link:../engines-chem
       '@classos/engines-math':
         specifier: workspace:*
         version: link:../engines-math
@@ -131,8 +143,33 @@ importers:
         specifier: ^3.0.5
         version: 3.2.7(@types/node@22.20.5)
 
+  packages/golden-tests:
+    dependencies:
+      '@classos/curriculum':
+        specifier: workspace:*
+        version: link:../curriculum
+      '@classos/engines-chem':
+        specifier: workspace:*
+        version: link:../engines-chem
+      '@classos/engines-math':
+        specifier: workspace:*
+        version: link:../engines-math
+      '@classos/engines-physics':
+        specifier: workspace:*
+        version: link:../engines-physics
+    devDependencies:
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.5
+        version: 3.2.7(@types/node@22.20.5)
+
   packages/input-kit:
     dependencies:
+      '@classos/engines-math':
+        specifier: workspace:*
+        version: link:../engines-math
       react:
         specifier: ^19.0.0
         version: 19.3.1
@@ -205,6 +242,9 @@ importers:
       '@classos/engines-math':
         specifier: workspace:*
         version: link:../engines-math
+      '@classos/engines-physics':
+        specifier: workspace:*
+        version: link:../engines-physics
       '@classos/input-kit':
         specifier: workspace:*
         version: link:../input-kit

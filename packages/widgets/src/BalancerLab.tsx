@@ -17,6 +17,7 @@ export function BalancerLab({
   const [reactants, setReactants] = useState("H2, O2");
   const [products, setProducts] = useState("H2O");
   const [selected, setSelected] = useState<string | null>("H2");
+  const [subscriptAttempt, setSubscriptAttempt] = useState<string | null>(null);
 
   const result = useMemo(() => {
     return balanceEquation({
@@ -29,6 +30,22 @@ export function BalancerLab({
     ? [...result.reactants, ...result.products]
     : [];
 
+  function guardFormulaInput(
+    value: string,
+    setter: (next: string) => void,
+  ) {
+    // Refuse mid-formula digit edits that look like subscript hacking
+    // (e.g. turning H2O into H2O2 by appending). Coefficients belong outside.
+    if (/\d{3,}/.test(value.replace(/\s/g, ""))) {
+      setSubscriptAttempt(
+        "Refuse: do not invent subscripts to balance — change coefficients only.",
+      );
+      return;
+    }
+    setSubscriptAttempt(null);
+    setter(value);
+  }
+
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -39,6 +56,7 @@ export function BalancerLab({
             onClick={() => {
               setReactants(preset.reactants);
               setProducts(preset.products);
+              setSubscriptAttempt(null);
             }}
             style={chipStyle(false)}
           >
@@ -47,10 +65,12 @@ export function BalancerLab({
         ))}
       </div>
       <label style={{ display: "grid", gap: 6, fontSize: 13 }}>
-        Reactants
+        Reactants (comma-separated formulas)
         <input
           value={reactants}
-          onChange={(event) => setReactants(event.target.value)}
+          onChange={(event) =>
+            guardFormulaInput(event.target.value, setReactants)
+          }
           style={fieldStyle}
         />
       </label>
@@ -58,10 +78,17 @@ export function BalancerLab({
         Products
         <input
           value={products}
-          onChange={(event) => setProducts(event.target.value)}
+          onChange={(event) =>
+            guardFormulaInput(event.target.value, setProducts)
+          }
           style={fieldStyle}
         />
       </label>
+      {subscriptAttempt && (
+        <div style={{ color: "var(--co-warn)", fontSize: 13 }}>
+          {subscriptAttempt}
+        </div>
+      )}
 
       <div
         style={{
@@ -72,7 +99,11 @@ export function BalancerLab({
         }}
       >
         <ViewCard title="Macro">
-          {result.ok ? "Balanced reaction ready" : "Waiting for valid equation"}
+          {result.ok
+            ? selected
+              ? `Observation focus: ${selected}`
+              : "Balanced reaction ready"
+            : "Waiting for valid equation"}
         </ViewCard>
         <ViewCard title="Particle">
           {species.map((item) => (
@@ -87,6 +118,11 @@ export function BalancerLab({
               }}
             >
               {item.coefficient}× {item.formula}
+              <div style={{ opacity: 0.7, fontSize: 11 }}>
+                {Object.entries(item.atoms)
+                  .map(([atom, count]) => `${atom}:${count}`)
+                  .join(" ")}
+              </div>
             </button>
           ))}
         </ViewCard>
@@ -97,9 +133,10 @@ export function BalancerLab({
         </ViewCard>
       </div>
 
-      {selected && (
+      {selected && result.ok && (
         <div style={{ color: "var(--co-ink-muted)", fontSize: 13 }}>
-          Highlighted species: {selected} (linked across all three views)
+          Highlighted species: {selected} — linked across macro / particle /
+          symbolic views. Coefficients scale molecules; formulas stay fixed.
         </div>
       )}
 

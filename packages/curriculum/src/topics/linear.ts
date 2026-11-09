@@ -1,0 +1,77 @@
+import type { TopicModule } from "../types";
+
+export const linearTopics: TopicModule[] = [
+  {
+    id: "math.10.pair-of-linear-equations.solving",
+    subject: "mathematics",
+    classLevel: 10,
+    chapter: "Pair of Linear Equations in Two Variables",
+    topic: "Solving a linear pair (algebraic)",
+    syllabusYear: "2025-26",
+    status: "in_progress",
+    studentInput: {
+      touch: ["drag a₁,b₁,c₁ / a₂,b₂,c₂ sliders"],
+      pointerKeyboard: ["type coefficients", "arrow-adjust focused slider"],
+      boardTriggers: ["linear pair", "ax+by=c"],
+    },
+    boardResponse: "Exact 2×2 solution with determinant path and residual check",
+    understandingGoal: "Unique / none / infinite cases from Δ, not from graphing alone",
+    modes: ["see", "predict", "build", "derive", "solve", "check"],
+    misconceptions: [
+      {
+        error: "Parallel lines always mean calculation error",
+        demo: "Show Δ = 0 with Δx ≠ 0 ⇒ no solution, not a bug",
+      },
+    ],
+    engines: ["cas"],
+    goldenTests: ["ncert.linear.pair.q1"],
+    languages: ["en", "hi"],
+    widget: "linear",
+    shipGate: {
+      syllabusValidated: true,
+      syllabusYear: "2025-26",
+      syllabusNote: "Thin vertical slice — not full chapter breadth",
+      teacherReviewed: false,
+      qaTouchVerified: true,
+      qaKeyboardVerified: true,
+      assumptionsPresent: true,
+      goldenIds: ["ncert.linear.pair.q1"],
+    },
+  },
+  {
+    id: "math.9.linear-equations.one-variable",
+    subject: "mathematics",
+    classLevel: 9,
+    chapter: "Linear Equations in Two Variables",
+    topic: "ax + b = c (one unknown bridge)",
+    syllabusYear: "2025-26",
+    status: "in_progress",
+    studentInput: {
+      touch: ["sliders for a, b, c"],
+      pointerKeyboard: ["type a, b, c"],
+      boardTriggers: ["2x+3=11"],
+    },
+    boardResponse: "Exact rational root with identity/contradiction detection",
+    understandingGoal: "Isolate x with exact fractions; see degenerate cases",
+    modes: ["see", "predict", "build", "solve", "check"],
+    misconceptions: [
+      {
+        error: "Dividing by zero coefficient still yields a number",
+        demo: "a = 0 cases → identity or contradiction",
+      },
+    ],
+    engines: ["cas"],
+    goldenTests: ["ncert.linear.single.q1"],
+    languages: ["en", "hi"],
+    widget: "linear",
+    shipGate: {
+      syllabusValidated: true,
+      syllabusYear: "2025-26",
+      teacherReviewed: false,
+      qaTouchVerified: true,
+      qaKeyboardVerified: true,
+      assumptionsPresent: true,
+      goldenIds: ["ncert.linear.single.q1"],
+    },
+  },
+];
