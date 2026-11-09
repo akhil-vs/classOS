@@ -1,17 +1,25 @@
 "use client";
 
 import { BoardShell, useBoardStore } from "@classos/board-core";
-import type { TopicModule } from "@classos/curriculum";
+import {
+  topicAssumptions,
+  topicUsesUnits,
+  type TopicModule,
+} from "@classos/curriculum";
 import { WidgetHost } from "@classos/widgets";
 import { useEffect, useState } from "react";
 
 export function BoardPageClient({ topic }: { topic?: TopicModule }) {
   const insertTemplate = useBoardStore((s) => s.insertTemplate);
   const setTopicId = useBoardStore((s) => s.setTopicId);
+  const setAssumptionBanner = useBoardStore((s) => s.setAssumptionBanner);
+  const clearBoard = useBoardStore((s) => s.clearBoard);
   const [explain, setExplain] = useState<string | null>(null);
 
   useEffect(() => {
+    clearBoard();
     setTopicId(topic?.id);
+    setAssumptionBanner(topicAssumptions(topic));
     if (topic?.widget) {
       insertTemplate(topic.widget);
     }
@@ -38,11 +46,9 @@ export function BoardPageClient({ topic }: { topic?: TopicModule }) {
   return (
     <>
       <BoardShell
-        assumption={
-          topic
-            ? `${topic.chapter} · engines calculate, AI only narrates`
-            : "Freeform personal board"
-        }
+        assumption={topicAssumptions(topic)}
+        topicWidget={topic?.widget}
+        unitsApply={topic ? topicUsesUnits(topic) : true}
         renderWidget={(widget) => (
           <WidgetHost kind={widget.kind} onExplain={handleExplain} />
         )}

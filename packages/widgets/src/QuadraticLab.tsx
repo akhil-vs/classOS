@@ -40,6 +40,17 @@ export function QuadraticLab({
 
   return (
     <div style={{ display: "grid", gap: 12 }}>
+      <div
+        role="note"
+        style={{
+          fontSize: 12,
+          color: "var(--co-warn)",
+          lineHeight: 1.4,
+        }}
+      >
+        Assumptions: real coefficients · complex roots withheld when D &lt; 0 ·
+        a, b, c are dimensionless (not lengths).
+      </div>
       <svg viewBox="0 0 280 160" width="100%" height={160} role="img" aria-label="Quadratic graph">
         <rect width="280" height="160" fill="rgba(0,0,0,0.25)" rx="8" />
         <line x1="0" y1="100" x2="280" y2="100" stroke="rgba(214,230,212,0.25)" />

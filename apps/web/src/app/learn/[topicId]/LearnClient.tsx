@@ -2,10 +2,17 @@
 
 import type { TopicModule } from "@classos/curriculum";
 import { LearnWorkspace } from "@classos/topic-ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { cacheTopicManifest } from "../../../lib/manifestCache";
 
 export function LearnClient({ topic }: { topic: TopicModule }) {
   const [explain, setExplain] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (navigator.onLine) {
+      cacheTopicManifest(topic);
+    }
+  }, [topic]);
 
   async function handleExplain(payload: unknown) {
     const response = await fetch("/api/explain", {

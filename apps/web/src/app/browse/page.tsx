@@ -1,4 +1,8 @@
-import { buildBrowseIndex, getTopicById } from "@classos/curriculum";
+import {
+  buildBrowseIndex,
+  getPilotTopics,
+  getTopicById,
+} from "@classos/curriculum";
 import { BrandMark } from "@classos/ui";
 import Link from "next/link";
 import type { CSSProperties } from "react";
@@ -28,6 +32,7 @@ async function BrowseInner({
     (chapter) =>
       chapter.classLevel === classLevel && chapter.subject === subject,
   );
+  const pilotIds = new Set(getPilotTopics().map((topic) => topic.id));
 
   return (
     <main style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px 48px" }}>
@@ -42,12 +47,15 @@ async function BrowseInner({
         }}
       >
         <BrandMark />
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <Link href="/" style={navChip}>
             Home
           </Link>
           <Link href="/board" style={navChip}>
             Board
+          </Link>
+          <Link href="/progress" style={navChip}>
+            Progress
           </Link>
           <Link href="/settings" style={navChip}>
             Settings
@@ -66,8 +74,9 @@ async function BrowseInner({
         Browse
       </h1>
       <p style={{ color: "var(--co-ink-muted)", marginTop: 0 }}>
-        Class → subject → chapter → topic. Manifests drive the UI — no hardcoded
-        chapter screens.
+        Phase 4 pilot focuses on shipped Class 10 Quadratic and Reactions.
+        Inventory chapters stay listed — Class 9–10 maths breadth is not the
+        next sprint.
       </p>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
@@ -126,7 +135,11 @@ async function BrowseInner({
                 </h2>
                 <span style={{ color: "var(--co-ink-muted)", fontSize: 13 }}>
                   phase {chapter.phase}
-                  {topics.length === 0 ? " · inventory only" : ""}
+                  {topics.some((topic) => topic && pilotIds.has(topic.id))
+                    ? " · pilot"
+                    : topics.length === 0
+                      ? " · inventory only"
+                      : ""}
                 </span>
               </div>
               {topics.length > 0 ? (
