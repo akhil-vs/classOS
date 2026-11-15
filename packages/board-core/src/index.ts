@@ -7,7 +7,19 @@ export {
   estimateLatencyMs,
   latencyMs,
 } from "./inkLatency";
+export {
+  PILOT_CHIP_INTENTS,
+  allowedIntentsForTopic,
+  mergePendingChips,
+  recogniseFromStroke,
+} from "./recognise";
 export { useBoardStore } from "./store";
+export {
+  ALL_TEMPLATES,
+  pilotPrimaryTemplates,
+  secondaryTemplates,
+  templatesForTopic,
+} from "./templates";
 export type {
   BoardEvent,
   BoardState,

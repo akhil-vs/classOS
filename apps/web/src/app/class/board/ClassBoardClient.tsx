@@ -170,6 +170,14 @@ export function ClassBoardClient() {
   return (
     <BoardShell
       mode="classroom"
+      topicWidget={
+        topic.id.includes("quadratic")
+          ? "quadratic"
+          : topic.id.includes("chemical-reactions")
+            ? "balancer"
+            : undefined
+      }
+      unitsApply={topic.id.includes("quadratic")}
       inkFrozen={session.predictOpen && session.status === "live"}
       assumption={`${topic.label} · engines calculate, AI only narrates`}
       renderWidget={(widget) => <WidgetHost kind={widget.kind} />}

@@ -18,22 +18,32 @@ export interface OfflineDegradeStatus {
   banner: string;
 }
 
-export function offlineBanner(online: boolean, manifestsCached: number): string {
-  if (online) return "";
-  if (manifestsCached > 0) {
-    return `Offline — using ${manifestsCached} cached topic manifest(s). Explain is unavailable; on-device engines still run.`;
+export type OfflineBannerKind = "hidden" | "offline" | "back-online";
+
+export function offlineBanner(
+  online: boolean,
+  manifestsCached: number,
+  kind: OfflineBannerKind = online ? "hidden" : "offline",
+): string {
+  if (kind === "back-online") {
+    return "Back online — Explain is available again. Cached pilot topics stay ready.";
   }
-  return "Offline — open a topic once while online to cache its manifest. Explain is unavailable.";
+  if (kind === "hidden" || online) return "";
+  if (manifestsCached > 0) {
+    return `Offline — using ${manifestsCached} cached pilot topic(s). Explain is unavailable; Quadratic and Reactions engines still run on-device.`;
+  }
+  return "Offline — open a Quadratic or Reactions Learn topic once while online to cache it. Explain is unavailable.";
 }
 
 export function buildOfflineStatus(
   online: boolean,
   manifestsCached: number,
+  kind: OfflineBannerKind = online ? "hidden" : "offline",
 ): OfflineDegradeStatus {
   return {
     online,
     manifestsCached,
     explainAvailable: online,
-    banner: offlineBanner(online, manifestsCached),
+    banner: offlineBanner(online, manifestsCached, kind),
   };
 }

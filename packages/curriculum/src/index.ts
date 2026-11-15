@@ -24,5 +24,13 @@ export {
   buildOfflineStatus,
   offlineBanner,
   type ManifestCacheEntry,
+  type OfflineBannerKind,
   type OfflineDegradeStatus,
 } from "./offlineCache";
+export {
+  getPilotTopics,
+  isPilotTopic,
+  predictOptionsForTopic,
+  topicAssumptions,
+  topicUsesUnits,
+} from "./pilot";

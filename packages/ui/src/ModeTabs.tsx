@@ -33,6 +33,7 @@ export function ModeTabs({
     <div
       role="tablist"
       aria-label="Teaching modes"
+      className="mode-tabs"
       style={{
         display: "flex",
         gap: 6,
@@ -66,6 +67,14 @@ export function ModeTabs({
           </button>
         );
       })}
+      <style>{`
+        @media (max-width: 360px) {
+          .mode-tabs button {
+            padding: 0 10px !important;
+            font-size: 13px;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -1,74 +1,23 @@
 "use client";
 
 import { create } from "zustand";
+import {
+  allowedIntentsForTopic,
+  mergePendingChips,
+  pointNearStroke,
+  recogniseFromStroke,
+} from "./recognise";
 import type {
   BoardState,
   BoardTool,
   BoardWidgetInstance,
   Point,
   Stroke,
-  SuggestionChip,
   UnitSystem,
 } from "./types";
 
 function uid(prefix: string) {
   return `${prefix}_${Math.random().toString(36).slice(2, 9)}`;
-}
-
-function recogniseFromStroke(stroke: Stroke): SuggestionChip | null {
-  if (stroke.points.length < 8) return null;
-  const xs = stroke.points.map((p) => p.x);
-  const ys = stroke.points.map((p) => p.y);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const width = maxX - minX;
-  const height = maxY - minY;
-  const last = stroke.points[stroke.points.length - 1]!;
-
-  // Heuristic stubs — real ink models plug in later (Phase 0: do not block UI).
-  if (width > 80 && height > 40 && height / Math.max(width, 1) < 0.75) {
-    return {
-      id: uid("chip"),
-      label: "Quadratic ax²+bx+c=0?",
-      intent: "quadratic",
-      x: last.x,
-      y: last.y,
-    };
-  }
-  if (width > 100 && height < 36) {
-    return {
-      id: uid("chip"),
-      label: "Linear ax+b=c?",
-      intent: "linear",
-      x: last.x,
-      y: last.y,
-    };
-  }
-  if (width > 40 && height > 60) {
-    return {
-      id: uid("chip"),
-      label: "Balance reaction?",
-      intent: "balancer",
-      x: last.x,
-      y: last.y,
-    };
-  }
-  return {
-    id: uid("chip"),
-    label: "Open graph?",
-    intent: "graph",
-    x: last.x,
-    y: last.y,
-  };
-}
-
-function strokeHits(stroke: Stroke, point: Point, pad = 8): boolean {
-  for (const p of stroke.points) {
-    if (Math.hypot(p.x - point.x, p.y - point.y) <= pad) return true;
-  }
-  return false;
 }
 
 interface BoardStore extends BoardState {
@@ -169,14 +118,15 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
       set({ timeline: events });
       return;
     }
-    const chip = recogniseFromStroke(stroke);
+    const allowed = allowedIntentsForTopic(get().topicId);
+    const chip = recogniseFromStroke(stroke, allowed);
     if (!chip) {
       set({ timeline: events });
       return;
     }
     set({
       timeline: [...events, { type: "chip", chip, at: Date.now() }],
-      chips: [...get().chips, chip],
+      chips: mergePendingChips(get().chips, chip),
     });
   },
   selectAt: (point) => {
@@ -184,7 +134,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     let hit: Stroke | undefined;
     for (let i = strokes.length - 1; i >= 0; i--) {
       const stroke = strokes[i]!;
-      if (strokeHits(stroke, point)) {
+      if (pointNearStroke(stroke, point)) {
         hit = stroke;
         break;
       }
@@ -252,6 +202,7 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
       return {
         strokes: state.strokes.slice(0, -1),
         selectedStrokeIds: [],
+        chips: [],
         timeline: [...state.timeline, { type: "undo", at: Date.now() }],
       };
     });

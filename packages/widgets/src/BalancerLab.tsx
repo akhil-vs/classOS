@@ -48,6 +48,17 @@ export function BalancerLab({
 
   return (
     <div style={{ display: "grid", gap: 12 }}>
+      <div
+        role="note"
+        style={{
+          fontSize: 12,
+          color: "var(--co-warn)",
+          lineHeight: 1.4,
+        }}
+      >
+        Assumptions: closed system · atoms conserved · subscripts fixed
+        (coefficients only). Counts are dimensionless — not SI units.
+      </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         {PRESETS.map((preset) => (
           <button
@@ -91,6 +102,7 @@ export function BalancerLab({
       )}
 
       <div
+        className="balancer-views"
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr 1fr",
@@ -156,6 +168,13 @@ export function BalancerLab({
           Explain verified steps
         </button>
       )}
+      <style>{`
+        @media (max-width: 720px) {
+          .balancer-views {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

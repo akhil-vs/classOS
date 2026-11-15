@@ -13,7 +13,7 @@ Implement in this order. Do not pull deferred work forward.
 | 1b | **Phase 1b — thin physics** | Scene type + assumption banner + one closed-form check | While Phase 1 finishes. No full Physics sims. |
 | 2 | **Phase 2 — maths vertical** | Quadratic (+ one linear/geometry slice) under ship gate; teacher-private equivalence | Vertical, not breadth. Class 9–10 inventory is the target, not the next sprint. |
 | 3 | **Phase 3 — chem vertical** | Reactions balancer to the same bar as quadratic | Physics Class 9–10 only after 1b is real. |
-| 4 | **Phase 4 — learner pilot** | Phones/laptops on Learn + personal board | Before any classroom infra. |
+| 4 | **Phase 4 — learner pilot** | Phones/laptops (360px / laptop) on Learn + personal board; shipped Quadratic + Reactions only | Watch chip noise, unused templates, units vs assumptions, offline banner. Before any classroom infra. |
 | 5 | **Phase 5 — classroom pack** | Harden local-first `/class/board` + `/join` (Predict votes, session lifecycle, presence) | After learner pilot. Reuses board-core; no cloud sync. |
 | 6 | **Phase 6 — school pilot** | Small school pilot; `/school` device-local summaries | After Phase 5. School-scoped only. |
 | 7 → 10 | **Breadth** | Class 11–12 maths → physics → chem → 6–8 | Only after pilots show what teachers actually use. |
