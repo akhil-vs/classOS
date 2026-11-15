@@ -29,16 +29,17 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Home / continue learning |
+| `/` | Home / continue learning (role-aware when signed in) |
+| `/login` | LMS L0 sign-in (demo school seeded) |
 | `/browse` | Class → subject → chapter → topic |
 | `/learn/[topicId]` | Guided Learn workspace |
 | `/board` | Personal blackboard |
-| `/progress` | Learner-pilot personal progress |
-| `/class/board` | Classroom live pack (local-first Predict + session lifecycle) |
-| `/join/[code]` | Student presence + Predict vote |
-| `/school` | School pilot checklist + local session summaries |
-| `/settings` | Language / input prefs stub |
-| `/author` | Internal manifest + ship-gate list |
+| `/progress` | Learner progress (student sign-in required) |
+| `/class/board` | Classroom live pack (teacher sign-in required) |
+| `/join/[code]` | Student presence + Predict vote (student sign-in required) |
+| `/school` | School session summaries (teacher / school admin) |
+| `/settings` | Language / input prefs + account |
+| `/author` | Internal ship-gate list (platform author only) |
 
 ```bash
 pnpm test
@@ -49,6 +50,7 @@ pnpm --filter @classos/web build
 
 ```
 apps/web                 Next.js App Router
+packages/auth            LMS L0 sessions, roles, demo school seed
 packages/board-core      Ink, chips, AI on/off, units, select, session timeline
 packages/topic-ui        Guided Learn shell
 packages/input-kit       Pointer + keyboard controls, QuantityField

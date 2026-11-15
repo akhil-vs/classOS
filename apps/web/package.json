@@ -10,6 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@classos/auth": "workspace:*",
     "@classos/board-core": "workspace:*",
     "@classos/class-live": "workspace:*",
     "@classos/curriculum": "workspace:*",

@@ -116,12 +116,41 @@ describe("local-first live class", () => {
     registerPresence({ liveClassId: session.id, studentLabel: "Dev" });
     expect(joinedCount(session)).toBe(1);
 
-    const presence = session.presence.Dev;
+    const presence = session.presence["n:Dev"];
     expect(presence).toBeDefined();
     if (presence) {
       presence.lastSeenAt = Date.now() - __PRESENCE_STALE_MS - 1;
     }
     expect(joinedCount(session)).toBe(0);
+  });
+
+  it("keys presence by userId when authenticated", () => {
+    const session = createLiveClass({
+      teacherLabel: "Ms. Rao",
+      teacherId: "user_teacher",
+      schoolId: "school_demo",
+    });
+    setPredictOpen(session.id, true);
+    registerPresence({
+      liveClassId: session.id,
+      studentLabel: "Asha",
+      userId: "user_asha",
+    });
+    castPredictVote({
+      liveClassId: session.id,
+      studentLabel: "Asha",
+      userId: "user_asha",
+      choice: "D > 0",
+      at: Date.now(),
+    });
+    expect(session.presence["u:user_asha"]?.studentLabel).toBe("Asha");
+    expect(session.votes["u:user_asha"]).toBe("D > 0");
+    expect(
+      listSchoolSessionSummaries({ schoolId: "school_demo" }),
+    ).toHaveLength(1);
+    expect(
+      listSchoolSessionSummaries({ schoolId: "other" }),
+    ).toHaveLength(0);
   });
 
   it("builds teacher and student snapshots without peer vote maps on join", () => {

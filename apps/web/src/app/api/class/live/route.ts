@@ -7,16 +7,21 @@ import {
   toTeacherSnapshot,
 } from "@classos/class-live";
 import { NextResponse } from "next/server";
+import { requireApiCapability } from "../../../../lib/auth";
 
 export async function POST(request: Request) {
+  const auth = requireApiCapability(request, "class_live");
+  if (!auth.ok) return auth.response;
+
   const body = (await request.json()) as {
-    teacherLabel?: string;
     topicId?: string;
     predictPrompt?: string;
     predictChoices?: string[];
   };
   const session = createLiveClass({
-    teacherLabel: body.teacherLabel ?? "Teacher",
+    teacherLabel: auth.context.user.name,
+    teacherId: auth.context.user.id,
+    schoolId: auth.context.user.schoolId ?? undefined,
     topicId: body.topicId,
     predictPrompt: body.predictPrompt,
     predictChoices: body.predictChoices,
@@ -30,8 +35,26 @@ export async function GET(request: Request) {
   const list = url.searchParams.get("list");
 
   if (list === "school") {
-    return NextResponse.json({ sessions: listSchoolSessionSummaries() });
+    const admin = requireApiCapability(request, "school_admin");
+    if (admin.ok) {
+      return NextResponse.json({
+        sessions: listSchoolSessionSummaries({
+          schoolId: admin.context.user.schoolId ?? undefined,
+        }),
+      });
+    }
+    const teacher = requireApiCapability(request, "school_view");
+    if (!teacher.ok) return teacher.response;
+    return NextResponse.json({
+      sessions: listSchoolSessionSummaries({
+        schoolId: teacher.context.user.schoolId ?? undefined,
+        teacherId: teacher.context.user.id,
+      }),
+    });
   }
+
+  const auth = requireApiCapability(request, "class_live");
+  if (!auth.ok) return auth.response;
 
   if (!id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });
@@ -40,10 +63,20 @@ export async function GET(request: Request) {
   if (!session) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  if (
+    session.teacherId &&
+    session.teacherId !== auth.context.user.id &&
+    auth.context.user.role !== "school_admin"
+  ) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   return NextResponse.json(toTeacherSnapshot(session));
 }
 
 export async function PATCH(request: Request) {
+  const auth = requireApiCapability(request, "class_live");
+  if (!auth.ok) return auth.response;
+
   const body = (await request.json()) as {
     id?: string;
     predictOpen?: boolean;
@@ -53,6 +86,18 @@ export async function PATCH(request: Request) {
   };
   if (!body.id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  }
+
+  const existing = getLiveClass(body.id);
+  if (!existing) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  if (
+    existing.teacherId &&
+    existing.teacherId !== auth.context.user.id &&
+    auth.context.user.role !== "school_admin"
+  ) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   if (body.action === "end") {

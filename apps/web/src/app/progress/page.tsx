@@ -1,16 +1,30 @@
 import { getPilotTopics } from "@classos/curriculum";
 import { BrandMark } from "@classos/ui";
 import Link from "next/link";
+import { AuthBar } from "../../components/AuthBar";
+import { requirePageSession } from "../../lib/auth";
 
-/** Phase 4 learner-pilot surface — shipped Quadratic + Reactions only. */
-export default function ProgressPage() {
+/** Phase 4 learner-pilot surface — LMS L0: signed-in students. */
+export default async function ProgressPage() {
+  const session = await requirePageSession("progress", { next: "/progress" });
   const pilot = getPilotTopics();
   const quadratic = pilot.filter((topic) => topic.subject === "mathematics");
   const reactions = pilot.filter((topic) => topic.subject === "chemistry");
 
   return (
     <main style={{ maxWidth: 840, margin: "0 auto", padding: "24px 16px 48px" }}>
-      <BrandMark />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+      >
+        <BrandMark />
+        <AuthBar />
+      </div>
       <h1
         style={{
           fontFamily: "var(--co-font-brand)",
@@ -21,10 +35,8 @@ export default function ProgressPage() {
         Personal progress
       </h1>
       <p style={{ color: "var(--co-ink-muted)" }}>
-        Learner pilot on phones and laptops. Watch recognition chip noise, unused
-        templates, units vs assumptions, and offline banner behaviour before any
-        classroom `/join` hardening. Progress stays on this device — cloud sync
-        is deferred.
+        Signed in as {session.user.name}. Progress remains device-local for this
+        pilot; cloud sync arrives under LMS L2 with school tenancy.
       </p>
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap", margin: "20px 0" }}>
         <Stat label="Pilot topics" value={String(pilot.length)} />
@@ -38,11 +50,20 @@ export default function ProgressPage() {
           ← Home
         </Link>
         {" · "}
-        <Link href="/board" style={{ color: "var(--co-accent)" }}>
-          Personal board
+        <Link href="/browse" style={{ color: "var(--co-accent)" }}>
+          Browse
         </Link>
       </p>
     </main>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div style={{ fontSize: 12, color: "var(--co-ink-muted)" }}>{label}</div>
+      <div style={{ fontFamily: "var(--co-font-brand)", fontSize: 28 }}>{value}</div>
+    </div>
   );
 }
 
@@ -54,59 +75,26 @@ function TopicGroup({
   topics: ReturnType<typeof getPilotTopics>;
 }) {
   return (
-    <section style={{ marginTop: 28 }}>
-      <h2
-        style={{
-          fontFamily: "var(--co-font-brand)",
-          fontSize: 20,
-          letterSpacing: "-0.02em",
-          margin: "0 0 8px",
-        }}
-      >
+    <section style={{ marginTop: 20, display: "grid", gap: 8 }}>
+      <h2 style={{ fontFamily: "var(--co-font-brand)", fontSize: 18, margin: 0 }}>
         {title}
       </h2>
-      <ul style={{ listStyle: "none", padding: 0, display: "grid", gap: 10 }}>
-        {topics.map((topic) => (
-          <li
-            key={topic.id}
-            style={{
-              borderTop: "1px solid var(--co-border)",
-              paddingTop: 12,
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 12,
-              flexWrap: "wrap",
-            }}
-          >
-            <div>
-              <div>{topic.topic}</div>
-              <div style={{ color: "var(--co-ink-muted)", fontSize: 13 }}>
-                Class {topic.classLevel} · shipped
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 12 }}>
-              <Link href={`/learn/${topic.id}`} style={{ color: "var(--co-accent)" }}>
-                Learn →
-              </Link>
-              <Link
-                href={`/board?topic=${topic.id}`}
-                style={{ color: "var(--co-ink-muted)" }}
-              >
-                Board
-              </Link>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {topics.map((topic) => (
+        <Link
+          key={topic.id}
+          href={`/learn/${topic.id}`}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 12,
+            padding: "12px 0",
+            borderTop: "1px solid var(--co-border)",
+          }}
+        >
+          <span>{topic.topic}</span>
+          <span style={{ color: "var(--co-accent)" }}>Open →</span>
+        </Link>
+      ))}
     </section>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div style={{ minWidth: 120 }}>
-      <div style={{ fontFamily: "var(--co-font-brand)", fontSize: 28 }}>{value}</div>
-      <div style={{ color: "var(--co-ink-muted)", fontSize: 13 }}>{label}</div>
-    </div>
   );
 }

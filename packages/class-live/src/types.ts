@@ -1,13 +1,16 @@
 /**
- * Phase 5 classroom pack — local-first protocol types.
- * Votes and presence stay on the teacher process; no cloud student sync.
+ * Phase 5 classroom pack + LMS L0 identity bindings.
+ * Votes and presence stay on the teacher process; keys prefer userId when set.
  */
 
 export type LiveClassStatus = "live" | "ended";
 
 export interface JoinPresence {
   liveClassId: string;
+  /** Display name shown on the teacher roster. */
   studentLabel: string;
+  /** Authenticated learner id when present (LMS L0+). */
+  userId?: string;
   joinedAt: number;
   lastSeenAt: number;
 }
@@ -15,6 +18,7 @@ export interface JoinPresence {
 export interface PredictVote {
   liveClassId: string;
   studentLabel: string;
+  userId?: string;
   choice: string;
   at: number;
 }
@@ -23,6 +27,9 @@ export interface LiveClassSession {
   id: string;
   joinCode: string;
   teacherLabel: string;
+  /** Authenticated teacher id when present (LMS L0+). */
+  teacherId?: string;
+  schoolId?: string;
   status: LiveClassStatus;
   topicId?: string;
   createdAt: number;
@@ -31,9 +38,9 @@ export interface LiveClassSession {
   predictOpen: boolean;
   predictPrompt: string;
   predictChoices: string[];
-  /** studentLabel → choice (last vote wins while Predict is open). */
+  /** presenceKey → choice (last vote wins while Predict is open). */
   votes: Record<string, string>;
-  /** studentLabel → presence (local-first roster). */
+  /** presenceKey → presence (local-first roster). */
   presence: Record<string, JoinPresence>;
 }
 
@@ -61,6 +68,8 @@ export interface SchoolSessionSummary {
   id: string;
   joinCode: string;
   teacherLabel: string;
+  teacherId?: string;
+  schoolId?: string;
   topicId?: string;
   createdAt: number;
   endedAt?: number;

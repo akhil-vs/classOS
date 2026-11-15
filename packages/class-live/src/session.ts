@@ -32,6 +32,16 @@ function normalizeCode(code: string): string {
   return code.trim().toUpperCase();
 }
 
+/** Prefer stable userId; fall back to display label for legacy/local pilots. */
+export function presenceKey(input: {
+  userId?: string;
+  studentLabel: string;
+}): string | null {
+  if (input.userId?.trim()) return `u:${input.userId.trim()}`;
+  const label = normalizeLabel(input.studentLabel);
+  return label ? `n:${label}` : null;
+}
+
 /** In-memory local-first store — single teacher device / process. */
 const sessions = new Map<string, LiveClassSession>();
 const byCode = new Map<string, string>();
@@ -45,15 +55,17 @@ function allocateJoinCode(): string {
 }
 
 function pruneStalePresence(session: LiveClassSession, now = Date.now()) {
-  for (const [label, presence] of Object.entries(session.presence)) {
+  for (const [key, presence] of Object.entries(session.presence)) {
     if (now - presence.lastSeenAt > PRESENCE_STALE_MS) {
-      delete session.presence[label];
+      delete session.presence[key];
     }
   }
 }
 
 export function createLiveClass(input: {
   teacherLabel: string;
+  teacherId?: string;
+  schoolId?: string;
   topicId?: string;
   predictPrompt?: string;
   predictChoices?: string[];
@@ -65,6 +77,8 @@ export function createLiveClass(input: {
     id: uid("live"),
     joinCode: code,
     teacherLabel: normalizeLabel(input.teacherLabel) || "Teacher",
+    teacherId: input.teacherId,
+    schoolId: input.schoolId,
     status: "live",
     topicId: input.topicId,
     createdAt: Date.now(),
@@ -123,19 +137,21 @@ export function castPredictVote(
 
   const studentLabel = normalizeLabel(vote.studentLabel);
   if (!studentLabel) return { error: "Student name required" };
+  const key = presenceKey({ userId: vote.userId, studentLabel });
+  if (!key) return { error: "Student name required" };
 
   const choice = vote.choice.trim();
   if (!session.predictChoices.includes(choice)) {
     return { error: "Choice is not on the Predict board" };
   }
 
-  session.votes[studentLabel] = choice;
-  // Voting implies presence.
+  session.votes[key] = choice;
   const now = vote.at || Date.now();
-  session.presence[studentLabel] = {
+  session.presence[key] = {
     liveClassId: session.id,
     studentLabel,
-    joinedAt: session.presence[studentLabel]?.joinedAt ?? now,
+    userId: vote.userId,
+    joinedAt: session.presence[key]?.joinedAt ?? now,
     lastSeenAt: now,
   };
   return session;
@@ -144,6 +160,7 @@ export function castPredictVote(
 export function registerPresence(input: {
   liveClassId: string;
   studentLabel: string;
+  userId?: string;
 }): JoinPresence | { error: string } {
   const session =
     getLiveClassByCode(input.liveClassId) ?? getLiveClass(input.liveClassId);
@@ -152,16 +169,19 @@ export function registerPresence(input: {
 
   const studentLabel = normalizeLabel(input.studentLabel);
   if (!studentLabel) return { error: "Student name required" };
+  const key = presenceKey({ userId: input.userId, studentLabel });
+  if (!key) return { error: "Student name required" };
 
   const now = Date.now();
-  const existing = session.presence[studentLabel];
+  const existing = session.presence[key];
   const presence: JoinPresence = {
     liveClassId: session.id,
     studentLabel,
+    userId: input.userId,
     joinedAt: existing?.joinedAt ?? now,
     lastSeenAt: now,
   };
-  session.presence[studentLabel] = presence;
+  session.presence[key] = presence;
   return presence;
 }
 
@@ -210,12 +230,22 @@ export function endLiveClass(id: string): LiveClassSession | { error: string } {
   return session;
 }
 
-export function listSchoolSessionSummaries(): SchoolSessionSummary[] {
+export function listSchoolSessionSummaries(filter?: {
+  schoolId?: string;
+  teacherId?: string;
+}): SchoolSessionSummary[] {
   return [...sessions.values()]
+    .filter((session) => {
+      if (filter?.schoolId && session.schoolId !== filter.schoolId) return false;
+      if (filter?.teacherId && session.teacherId !== filter.teacherId) return false;
+      return true;
+    })
     .map((session) => ({
       id: session.id,
       joinCode: session.joinCode,
       teacherLabel: session.teacherLabel,
+      teacherId: session.teacherId,
+      schoolId: session.schoolId,
       topicId: session.topicId,
       createdAt: session.createdAt,
       endedAt: session.endedAt,

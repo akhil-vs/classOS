@@ -45,8 +45,8 @@ export function SchoolPilotClient() {
         Local session summaries
       </h2>
       <p style={{ color: "var(--co-ink-muted)", margin: 0, fontSize: 14, lineHeight: 1.45 }}>
-        School-scoped, device-local only. No cross-school marketplace or cloud
-        student sync in this pilot.
+        Filtered by your role. Device-local store for L0 — Postgres tenancy in
+        L1+.
       </p>
       {error && <div style={{ color: "var(--co-warn)", fontSize: 13 }}>{error}</div>}
       {sessions.length === 0 ? (
