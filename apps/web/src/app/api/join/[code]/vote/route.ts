@@ -1,4 +1,9 @@
-import { castPredictVote, getLiveClassByCode, voteSummary } from "@classos/class-live";
+import {
+  castPredictVote,
+  getLiveClassByCode,
+  toStudentSnapshot,
+  voteSummary,
+} from "@classos/class-live";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -32,5 +37,6 @@ export async function POST(
   return NextResponse.json({
     ok: true,
     voteSummary: voteSummary(result),
+    session: toStudentSnapshot(result),
   });
 }

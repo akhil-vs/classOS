@@ -124,11 +124,11 @@ Predict is self-paced in Learn/personal board, and class-voted via `/join` on th
 
 ## Phase 4–6 exit criteria
 
-- **Phase 4 (now):** Learn + personal board usable at **360px and laptop** widths on shipped **Quadratic** and **Reactions** only. Explicitly watch and harden: recognition chip noise, unused templates, units vs assumption confusion, offline banner behaviour. `/progress` stays the learner-pilot path.  
-- **Phase 5 (after Phase 4 evidence):** Harden local-first `/class/board` + `/join` classroom pack — do not expand classroom until pilot notes land.  
-- **Phase 6 (after Phase 5):** Small school pilot; `/school` admin stub; school-scoped reports only.  
+- **Phase 4:** Learn + personal board usable at **360px and laptop** widths on shipped **Quadratic** and **Reactions** only. Explicitly watch and harden: recognition chip noise, unused templates, units vs assumption confusion, offline banner behaviour. `/progress` stays the learner-pilot path.  
+- **Phase 5:** Harden local-first `/class/board` + `/join` — start/end session lifecycle, presence, Predict open/close with vote tallies, board-core reuse with freeze while Predict is open. No WebSocket fan-out or cloud sync required.  
+- **Phase 6:** Small school pilot; `/school` checklist + device-local session summaries; school-scoped reports only.  
 
-Do **not** pull forward during Phase 4: Class 9–10 maths inventory breadth, full physics sims, cloud sync, or Devanagari ink.  
+Do **not** pull forward during Phase 4–6: Class 9–10 maths inventory breadth, full physics sims, cloud sync, or Devanagari ink.
 
 ## Accuracy rules
 
@@ -155,7 +155,8 @@ Learn, personal blackboard, and classroom board architecture: [`architecture/web
 1. ~~Scaffold Next.js with `/browse`, `/learn/[topicId]`, and `/board`.~~  
 2. ~~Phase 1 platform base + Phase 0 spikes + Phase 1b closed-form.~~  
 3. ~~Quadratic + Reactions verticals under ship gate; linear/geometry slice.~~  
-4. **Phase 4 learner pilot** — Learn + personal board at 360px/laptop on Quadratic + Reactions; chip noise, templates, units/assumptions, offline banner.  
-5. Harden local-first `/join` classroom pack (**Phase 5**) only after pilot evidence.  
-6. Small school pilot (**Phase 6**) after Phase 5.  
-7. Do **not** pull forward: Class 9–10 maths inventory breadth, full physics sims, cloud sync, Devanagari ink, free-hand circuits/organics, marketplace, panel matrix, onboarding.
+4. ~~Learner pilot (Phase 4) — Learn + personal board at 360px/laptop on Quadratic + Reactions; chip noise, templates, units/assumptions, offline banner.~~  
+5. ~~Harden local-first `/join` classroom pack (Phase 5).~~  
+6. ~~Small school pilot surface (Phase 6) — `/school` local summaries.~~  
+7. Breadth only after pilot notes: Class 11–12 maths → physics → chem → 6–8.  
+8. Do **not** pull forward: Class 9–10 maths inventory breadth, full physics sims, cloud sync, Devanagari ink, free-hand circuits/organics, marketplace, panel matrix, onboarding.

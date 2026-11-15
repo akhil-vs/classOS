@@ -60,6 +60,12 @@ export default function HomePage() {
         <Link href="/browse" style={secondaryBtn}>
           Browse
         </Link>
+        <Link href="/class/board" style={secondaryBtn}>
+          Classroom
+        </Link>
+        <Link href="/school" style={secondaryBtn}>
+          School pilot
+        </Link>
       </div>
 
       <section style={{ display: "grid", gap: 12, marginTop: 8 }}>

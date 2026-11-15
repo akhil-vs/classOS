@@ -18,6 +18,9 @@ export function BoardShell({
   assumption,
   topicWidget,
   unitsApply = true,
+  liveBar,
+  inkFrozen = false,
+  mode = "personal",
 }: {
   renderWidget?: (widget: BoardWidgetInstance) => ReactNode;
   assumption?: string;
@@ -25,6 +28,11 @@ export function BoardShell({
   topicWidget?: TemplateKind | string;
   /** False for dimensionless algebra / equation topics. */
   unitsApply?: boolean;
+  /** Classroom live strip (join count / Predict / end). */
+  liveBar?: ReactNode;
+  /** When Predict is open, freeze ink on the projected board. */
+  inkFrozen?: boolean;
+  mode?: "personal" | "classroom";
 }) {
   const tool = useBoardStore((s) => s.tool);
   const aiEnabled = useBoardStore((s) => s.aiEnabled);
@@ -238,6 +246,26 @@ export function BoardShell({
             backgroundSize: "28px 28px, 28px 28px, auto",
           }}
         >
+          {inkFrozen ? (
+            <div
+              aria-live="polite"
+              style={{
+                position: "absolute",
+                inset: 0,
+                zIndex: 4,
+                display: "grid",
+                placeItems: "center",
+                background: "rgba(15, 20, 25, 0.45)",
+                color: "var(--co-accent)",
+                fontFamily: "var(--co-font-brand)",
+                fontSize: 22,
+                letterSpacing: "-0.02em",
+                pointerEvents: "all",
+              }}
+            >
+              Predict open — board frozen for votes
+            </div>
+          ) : null}
           <InkCanvas />
           <ChipLayer />
           {banner && (
@@ -335,6 +363,7 @@ export function BoardShell({
         </section>
       </div>
 
+      {liveBar}
       <footer
         style={{
           borderTop: "1px solid var(--co-border)",
@@ -348,6 +377,7 @@ export function BoardShell({
         }}
       >
         <span>
+          {mode === "classroom" ? "Classroom board · " : ""}
           {aiEnabled
             ? "AI on — confident chips only; confirm before opening"
             : "Blackboard only — ink and templates, no chips"}
