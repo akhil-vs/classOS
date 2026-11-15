@@ -30,7 +30,8 @@ Open [http://localhost:3000](http://localhost:3000).
 | Route | Purpose |
 | --- | --- |
 | `/` | Home / continue learning (role-aware when signed in) |
-| `/login` | LMS L0 sign-in (demo school seeded) |
+| `/login` | Sign-in (two demo schools seeded) |
+| `/login/invite/[token]` | Accept school invite |
 | `/browse` | Class → subject → chapter → topic |
 | `/learn/[topicId]` | Guided Learn workspace |
 | `/board` | Personal blackboard |
@@ -50,7 +51,7 @@ pnpm --filter @classos/web build
 
 ```
 apps/web                 Next.js App Router
-packages/auth            LMS L0 sessions, roles, demo school seed
+packages/auth            LMS auth: sessions, roles, school tenancy, invites (Postgres or memory)
 packages/board-core      Ink, chips, AI on/off, units, select, session timeline
 packages/topic-ui        Guided Learn shell
 packages/input-kit       Pointer + keyboard controls, QuantityField

@@ -10,7 +10,7 @@ import { requireApiCapability } from "../../../../lib/auth";
  * Results must stay in the teacher session (DPDP: learner work private).
  */
 export async function POST(request: Request) {
-  const auth = requireApiCapability(request, "teacher_equivalence");
+  const auth = await requireApiCapability(request, "teacher_equivalence");
   if (!auth.ok) return auth.response;
 
   const body = (await request.json()) as {

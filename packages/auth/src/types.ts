@@ -1,6 +1,6 @@
 /**
- * LMS L0 identity types — school tenancy fields ready for L1+.
- * Store is in-process for L0; swap to Postgres behind the same shapes.
+ * LMS identity + school tenancy (L0/L1).
+ * Memory store for unit tests; Postgres when DATABASE_URL is set.
  */
 
 export type Role =
@@ -8,6 +8,8 @@ export type Role =
   | "teacher"
   | "school_admin"
   | "platform_author";
+
+export type SchoolRole = Exclude<Role, "platform_author">;
 
 export type AuthAction =
   | "learn"
@@ -23,6 +25,8 @@ export type AuthAction =
 export interface School {
   id: string;
   name: string;
+  locale: string;
+  guestJoinPolicy: "off" | "teacher_issued";
 }
 
 export interface User {
@@ -37,7 +41,7 @@ export interface User {
 export interface Membership {
   userId: string;
   schoolId: string;
-  role: Exclude<Role, "platform_author">;
+  role: SchoolRole;
 }
 
 /** Platform staff — not school-scoped. */
@@ -53,6 +57,19 @@ export interface Session {
   expiresAt: number;
 }
 
+export interface Invite {
+  id: string;
+  schoolId: string;
+  email: string;
+  role: SchoolRole;
+  /** sha256 hex of the raw token */
+  tokenHash: string;
+  invitedByUserId: string;
+  createdAt: number;
+  expiresAt: number;
+  acceptedAt: number | null;
+}
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -66,4 +83,12 @@ export interface SessionContext {
   sessionId: string;
   user: AuthUser;
   expiresAt: number;
+}
+
+export interface SchoolMemberView {
+  userId: string;
+  email: string;
+  name: string;
+  role: SchoolRole;
+  status: User["status"];
 }

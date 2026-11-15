@@ -68,6 +68,8 @@ export default async function LoginPage({
               {" · "}
               {account.role}
               {" · "}
+              {account.school}
+              {" · "}
               <code>{account.passwordHint}</code>
             </li>
           ))}

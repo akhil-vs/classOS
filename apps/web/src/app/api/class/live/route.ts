@@ -1,3 +1,4 @@
+import { assertSameSchool } from "@classos/auth";
 import {
   createLiveClass,
   endLiveClass,
@@ -10,8 +11,14 @@ import { NextResponse } from "next/server";
 import { requireApiCapability } from "../../../../lib/auth";
 
 export async function POST(request: Request) {
-  const auth = requireApiCapability(request, "class_live");
+  const auth = await requireApiCapability(request, "class_live");
   if (!auth.ok) return auth.response;
+  if (!auth.context.user.schoolId) {
+    return NextResponse.json(
+      { error: "Teacher must belong to a school" },
+      { status: 403 },
+    );
+  }
 
   const body = (await request.json()) as {
     topicId?: string;
@@ -21,7 +28,7 @@ export async function POST(request: Request) {
   const session = createLiveClass({
     teacherLabel: auth.context.user.name,
     teacherId: auth.context.user.id,
-    schoolId: auth.context.user.schoolId ?? undefined,
+    schoolId: auth.context.user.schoolId,
     topicId: body.topicId,
     predictPrompt: body.predictPrompt,
     predictChoices: body.predictChoices,
@@ -35,7 +42,7 @@ export async function GET(request: Request) {
   const list = url.searchParams.get("list");
 
   if (list === "school") {
-    const admin = requireApiCapability(request, "school_admin");
+    const admin = await requireApiCapability(request, "school_admin");
     if (admin.ok) {
       return NextResponse.json({
         sessions: listSchoolSessionSummaries({
@@ -43,7 +50,7 @@ export async function GET(request: Request) {
         }),
       });
     }
-    const teacher = requireApiCapability(request, "school_view");
+    const teacher = await requireApiCapability(request, "school_view");
     if (!teacher.ok) return teacher.response;
     return NextResponse.json({
       sessions: listSchoolSessionSummaries({
@@ -53,7 +60,7 @@ export async function GET(request: Request) {
     });
   }
 
-  const auth = requireApiCapability(request, "class_live");
+  const auth = await requireApiCapability(request, "class_live");
   if (!auth.ok) return auth.response;
 
   if (!id) {
@@ -62,6 +69,13 @@ export async function GET(request: Request) {
   const session = getLiveClass(id);
   if (!session) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  const schoolGate = assertSameSchool(auth.context, session.schoolId);
+  if (!schoolGate.ok) {
+    return NextResponse.json(
+      { error: schoolGate.error },
+      { status: schoolGate.status },
+    );
   }
   if (
     session.teacherId &&
@@ -74,7 +88,7 @@ export async function GET(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const auth = requireApiCapability(request, "class_live");
+  const auth = await requireApiCapability(request, "class_live");
   if (!auth.ok) return auth.response;
 
   const body = (await request.json()) as {
@@ -91,6 +105,13 @@ export async function PATCH(request: Request) {
   const existing = getLiveClass(body.id);
   if (!existing) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  const schoolGate = assertSameSchool(auth.context, existing.schoolId);
+  if (!schoolGate.ok) {
+    return NextResponse.json(
+      { error: schoolGate.error },
+      { status: schoolGate.status },
+    );
   }
   if (
     existing.teacherId &&
