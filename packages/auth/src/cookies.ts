@@ -1,4 +1,4 @@
-import { COOKIE_NAME, SESSION_TTL_MS } from "./store";
+import { COOKIE_NAME, SESSION_TTL_MS } from "./seed";
 
 export { COOKIE_NAME };
 

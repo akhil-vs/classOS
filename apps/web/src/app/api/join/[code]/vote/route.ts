@@ -1,3 +1,4 @@
+import { assertSameSchool } from "@classos/auth";
 import {
   castPredictVote,
   getLiveClassByCode,
@@ -10,7 +11,7 @@ export async function POST(
   request: Request,
   context: { params: Promise<{ code: string }> },
 ) {
-  const auth = requireApiCapability(request, "join_live");
+  const auth = await requireApiCapability(request, "join_live");
   if (!auth.ok) return auth.response;
 
   const { code } = await context.params;
@@ -23,12 +24,12 @@ export async function POST(
   if (!existing) {
     return NextResponse.json({ error: "Join code not found" }, { status: 404 });
   }
-  if (
-    existing.schoolId &&
-    auth.context.user.schoolId &&
-    existing.schoolId !== auth.context.user.schoolId
-  ) {
-    return NextResponse.json({ error: "Wrong school for this class" }, { status: 403 });
+  const schoolGate = assertSameSchool(auth.context, existing.schoolId);
+  if (!schoolGate.ok) {
+    return NextResponse.json(
+      { error: schoolGate.error },
+      { status: schoolGate.status },
+    );
   }
 
   const result = castPredictVote({

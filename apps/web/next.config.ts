@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
     "@classos/ui",
     "@classos/widgets",
   ],
+  serverExternalPackages: ["pg"],
   outputFileTracingRoot: path.join(__dirname, "../.."),
 };
 

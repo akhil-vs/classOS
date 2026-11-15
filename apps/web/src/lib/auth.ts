@@ -18,9 +18,9 @@ export async function readSessionFromCookies(): Promise<SessionContext | null> {
   return getSessionContext(sessionId);
 }
 
-export function readSessionFromRequest(
+export async function readSessionFromRequest(
   request: Request,
-): SessionContext | null {
+): Promise<SessionContext | null> {
   const sessionId = parseSessionIdFromCookieHeader(
     request.headers.get("cookie"),
   );
@@ -33,7 +33,9 @@ export async function requirePageSession(
 ): Promise<SessionContext> {
   const context = await readSessionFromCookies();
   if (!context) {
-    const next = options?.next ? `?next=${encodeURIComponent(options.next)}` : "";
+    const next = options?.next
+      ? `?next=${encodeURIComponent(options.next)}`
+      : "";
     redirect(`/login${next}`);
   }
   if (action) {
@@ -45,13 +47,14 @@ export async function requirePageSession(
   return context;
 }
 
-export function requireApiCapability(
+export async function requireApiCapability(
   request: Request,
   action: AuthAction,
-):
+): Promise<
   | { ok: true; context: SessionContext }
-  | { ok: false; response: NextResponse } {
-  const context = readSessionFromRequest(request);
+  | { ok: false; response: NextResponse }
+> {
+  const context = await readSessionFromRequest(request);
   const check = requireCapability(context, action);
   if (!check.ok) {
     return {

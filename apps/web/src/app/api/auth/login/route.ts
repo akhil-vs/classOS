@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = loginWithPassword(body.email, body.password);
+  const result = await loginWithPassword(body.email, body.password);
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 401 });
   }

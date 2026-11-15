@@ -2,9 +2,10 @@ import { BrandMark } from "@classos/ui";
 import Link from "next/link";
 import { AuthBar } from "../../components/AuthBar";
 import { requirePageSession } from "../../lib/auth";
+import { SchoolAdminClient } from "./SchoolAdminClient";
 import { SchoolPilotClient } from "./SchoolPilotClient";
 
-/** Phase 6 school surface — LMS L0: teacher (own) or school_admin. */
+/** LMS L1 school surface — admin roster + school-scoped session summaries. */
 export default async function SchoolPage() {
   const session = await requirePageSession("school_view", { next: "/school" });
   const isAdmin = session.user.role === "school_admin";
@@ -27,18 +28,19 @@ export default async function SchoolPage() {
         {isAdmin ? "School admin" : "School sessions"}
       </h1>
       <p style={{ color: "var(--co-ink-muted)", lineHeight: 1.5 }}>
-        {isAdmin
-          ? "School-scoped live session summaries for Demo CBSE School. Cloud roster sync arrives in later LMS phases."
-          : "Your classroom sessions on this device. School-wide admin tools require the school_admin role."}
+        {session.user.schoolName ?? "Your school"} — LMS L1 tenancy. Session lists
+        and roster stay inside this school only.
       </p>
 
-      <ol style={{ color: "var(--co-ink-muted)", lineHeight: 1.7, paddingLeft: 18 }}>
-        <li>Sign in as a teacher to start `/class/board`.</li>
-        <li>Students sign in and open `/join/[code]` to vote.</li>
-        <li>Review session summaries below (filtered by role).</li>
-      </ol>
+      {isAdmin && <SchoolAdminClient />}
 
-      <p style={{ margin: "20px 0" }}>
+      {!isAdmin && (
+        <p style={{ margin: "0 0 20px", fontSize: 14, color: "var(--co-ink-muted)" }}>
+          Showing your classroom sessions. Roster and invites require school_admin.
+        </p>
+      )}
+
+      <p style={{ margin: "0 0 20px" }}>
         <Link href="/class/board" style={{ color: "var(--co-accent)" }}>
           Open classroom board →
         </Link>

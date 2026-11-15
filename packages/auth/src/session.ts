@@ -1,6 +1,7 @@
 import { can } from "./capabilities";
+import { ensureAuthReady } from "./db";
 import { verifyPassword } from "./password";
-import { authStore } from "./store";
+import { SESSION_TTL_MS } from "./seed";
 import type {
   AuthAction,
   AuthUser,
@@ -8,56 +9,53 @@ import type {
   SessionContext,
 } from "./types";
 
-function resolveRole(userId: string): {
-  role: Role;
-  schoolId: string | null;
-  schoolName: string | null;
-} | null {
-  const platform = authStore.platformGrants.get(userId);
+export async function toAuthUser(userId: string): Promise<AuthUser | null> {
+  const repo = await ensureAuthReady();
+  const user = await repo.getUser(userId);
+  if (!user || user.status !== "active") return null;
+
+  const platform = await repo.getPlatformGrant(userId);
   if (platform) {
-    return { role: platform.role, schoolId: null, schoolName: null };
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: platform.role,
+      schoolId: null,
+      schoolName: null,
+    };
   }
-  const membership = authStore.memberships.get(userId);
+
+  const membership = await repo.getMembership(userId);
   if (!membership) return null;
-  const school = authStore.schools.get(membership.schoolId);
+  const school = await repo.getSchool(membership.schoolId);
   return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
     role: membership.role,
     schoolId: membership.schoolId,
     schoolName: school?.name ?? null,
   };
 }
 
-export function toAuthUser(userId: string): AuthUser | null {
-  const user = authStore.users.get(userId);
-  if (!user || user.status !== "active") return null;
-  const scoped = resolveRole(userId);
-  if (!scoped) return null;
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: scoped.role,
-    schoolId: scoped.schoolId,
-    schoolName: scoped.schoolName,
-  };
-}
-
-export function loginWithPassword(
+export async function loginWithPassword(
   email: string,
   password: string,
-): { ok: true; context: SessionContext } | { ok: false; error: string } {
-  const user = authStore.findUserByEmail(email);
+): Promise<{ ok: true; context: SessionContext } | { ok: false; error: string }> {
+  const repo = await ensureAuthReady();
+  const user = await repo.findUserByEmail(email);
   if (!user || user.status !== "active") {
     return { ok: false, error: "Invalid email or password" };
   }
   if (!verifyPassword(password, user.passwordHash)) {
     return { ok: false, error: "Invalid email or password" };
   }
-  const authUser = toAuthUser(user.id);
+  const authUser = await toAuthUser(user.id);
   if (!authUser) {
     return { ok: false, error: "Account has no role" };
   }
-  const session = authStore.createSession(user.id);
+  const session = await repo.createSession(user.id, SESSION_TTL_MS);
   return {
     ok: true,
     context: {
@@ -68,15 +66,16 @@ export function loginWithPassword(
   };
 }
 
-export function getSessionContext(
+export async function getSessionContext(
   sessionId: string | undefined | null,
-): SessionContext | null {
+): Promise<SessionContext | null> {
   if (!sessionId) return null;
-  const session = authStore.getSession(sessionId);
+  const repo = await ensureAuthReady();
+  const session = await repo.getSession(sessionId);
   if (!session) return null;
-  const user = toAuthUser(session.userId);
+  const user = await toAuthUser(session.userId);
   if (!user) {
-    authStore.deleteSession(session.id);
+    await repo.deleteSession(session.id);
     return null;
   }
   return {
@@ -86,8 +85,10 @@ export function getSessionContext(
   };
 }
 
-export function logoutSession(sessionId: string | undefined | null) {
-  if (sessionId) authStore.deleteSession(sessionId);
+export async function logoutSession(sessionId: string | undefined | null) {
+  if (!sessionId) return;
+  const repo = await ensureAuthReady();
+  await repo.deleteSession(sessionId);
 }
 
 export function requireCapability(
@@ -109,32 +110,50 @@ export function listDemoAccounts(): Array<{
   email: string;
   role: Role;
   passwordHint: string;
+  school: string;
 }> {
   return [
     {
       email: "teacher@demo.classos",
       role: "teacher",
       passwordHint: "demo-teacher",
+      school: "Demo CBSE School",
     },
     {
       email: "asha@demo.classos",
       role: "student",
       passwordHint: "demo-student",
-    },
-    {
-      email: "dev@demo.classos",
-      role: "student",
-      passwordHint: "demo-student",
+      school: "Demo CBSE School",
     },
     {
       email: "admin@demo.classos",
       role: "school_admin",
       passwordHint: "demo-admin",
+      school: "Demo CBSE School",
+    },
+    {
+      email: "teacher@north.classos",
+      role: "teacher",
+      passwordHint: "demo-teacher",
+      school: "North Ridge Public",
+    },
+    {
+      email: "ria@north.classos",
+      role: "student",
+      passwordHint: "demo-student",
+      school: "North Ridge Public",
+    },
+    {
+      email: "admin@north.classos",
+      role: "school_admin",
+      passwordHint: "demo-admin",
+      school: "North Ridge Public",
     },
     {
       email: "author@classos.dev",
       role: "platform_author",
       passwordHint: "demo-author",
+      school: "—",
     },
   ];
 }

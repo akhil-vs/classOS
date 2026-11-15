@@ -210,7 +210,7 @@ Aligns after Phase 6 school pilot. Do **not** block curriculum breadth on finish
 | Phase | Name | Delivers | Exit gate |
 | --- | --- | --- | --- |
 | **L0** | Auth foundation | `/login`, session middleware, `User` + password, role claim on session, protect `/author` + equivalence API | Unauthenticated calls to teacher/author APIs return 401/403 — **implemented** (`@classos/auth`, in-process store; Postgres in L1) |
-| **L1** | School tenancy | `School`, `Membership`, school_admin invite, `/school` requires admin, teacher login | Two schools cannot see each other’s data in integration tests |
+| **L1** | School tenancy | `School`, `Membership`, school_admin invite, `/school` requires admin, teacher login | Two schools cannot see each other’s data in integration tests — **implemented** (Postgres when `DATABASE_URL` is set; memory fallback) |
 | **L2** | Student accounts + progress | Student invites, `/progress` server-backed, Learn session checkpoints | Student A cannot read student B progress |
 | **L3** | Sections & roster | `ClassSection`, enrollments, teacher section list | Teacher only starts live for assigned sections |
 | **L4** | Authenticated classroom | Live class bound to teacher+section; `/join` requires student or guest token; retire open label join | Presence list shows real roster names; forged join rejected |
