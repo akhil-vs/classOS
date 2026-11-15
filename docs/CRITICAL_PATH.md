@@ -17,10 +17,11 @@ Implement in this order. Do not pull deferred work forward.
 | 5 | **Phase 5 — classroom pack** | Harden local-first `/class/board` + `/join` (Predict votes, session lifecycle, presence) | After learner pilot. Reuses board-core; no cloud sync. |
 | 6 | **Phase 6 — school pilot** | Small school pilot; `/school` device-local summaries | After Phase 5. School-scoped only. |
 | 7 → 10 | **Breadth** | Class 11–12 maths → physics → chem → 6–8 | Only after pilots show what teachers actually use. |
+| ‖ | **LMS track (L0→L7)** | Login, school tenancy, roles, rostered `/join`, cloud progress under access control | Post–Phase 6 platform layer. Parallel with breadth. See [`architecture/lms.md`](./architecture/lms.md). |
 
 ## Defer / ongoing (do not pull forward)
 
-- Cloud student sync
+- Cloud student sync **until LMS L0–L1** (tenancy + roles). Then deliver under [`architecture/lms.md`](./architecture/lms.md) L2+
 - Devanagari handwriting
 - Class 9–10 maths inventory breadth (catalogue only until pilots speak)
 - Full physics sims (beyond Phase 1b closed-form)
@@ -28,6 +29,7 @@ Implement in this order. Do not pull deferred work forward.
 - Content marketplace
 - Panel-vendor matrix
 - Business / onboarding
+- Parent portals (LMS later)
 
 ## Exit criteria pointers
 

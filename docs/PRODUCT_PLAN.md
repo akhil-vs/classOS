@@ -28,7 +28,8 @@ ClassOS ships in three modes that share engines and curriculum data:
 | Touch and non-touch (mouse + keyboard) parity | Stylus polish |
 | English + Hindi first | Other regional languages |
 | Toolbar / templates before free-hand diagrams | Messy handwriting, free-hand circuits and organic structures |
-| Local-first classroom pack | Cloud student sync |
+| Local-first classroom pack (Phases 5–6) | Unscoped cloud sync (must wait for LMS tenancy) |
+| LMS login + school roles + access restrictions | — (planned: [`architecture/lms.md`](./architecture/lms.md)) |
 | Latin ink heuristics | Devanagari handwriting |
 | — | Panel-vendor matrix, business/onboarding |
 
@@ -159,4 +160,5 @@ Learn, personal blackboard, and classroom board architecture: [`architecture/web
 5. ~~Harden local-first `/join` classroom pack (Phase 5).~~  
 6. ~~Small school pilot surface (Phase 6) — `/school` local summaries.~~  
 7. Breadth only after pilot notes: Class 11–12 maths → physics → chem → 6–8.  
-8. Do **not** pull forward: Class 9–10 maths inventory breadth, full physics sims, cloud sync, Devanagari ink, free-hand circuits/organics, marketplace, panel matrix, onboarding.
+8. **LMS track** after Phase 6: identity → school tenancy → roles → rostered classroom → cloud progress — [`architecture/lms.md`](./architecture/lms.md).  
+9. Do **not** pull forward: Class 9–10 maths inventory breadth, full physics sims, cloud sync **without** LMS L0–L1, Devanagari ink, free-hand circuits/organics, marketplace, panel matrix, onboarding, parent portals.

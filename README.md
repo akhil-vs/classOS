@@ -72,6 +72,7 @@ packages/ui              Tokens + shared chrome
 | [`docs/curriculum/topic-schema.md`](docs/curriculum/topic-schema.md) | Topic module data contract |
 | [`docs/architecture/engines.md`](docs/architecture/engines.md) | Engine requirements |
 | [`docs/architecture/web-app.md`](docs/architecture/web-app.md) | Learn + personal board + classroom web plan |
+| [`docs/architecture/lms.md`](docs/architecture/lms.md) | LMS track: login, roles, school tenancy, access restrictions |
 | [`docs/architecture/phase0-spikes.md`](docs/architecture/phase0-spikes.md) | Latency / offline / golden spikes |
 | [`docs/architecture/licensing.md`](docs/architecture/licensing.md) | Third-party engine licensing notes |
 | [`docs/ClassOS_Full_Topic-by-Topic_Plan_CBSE.pdf`](docs/ClassOS_Full_Topic-by-Topic_Plan_CBSE.pdf) | Source topic-by-topic plan |
