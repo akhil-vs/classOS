@@ -3,9 +3,9 @@ import { useBoardStore } from "./store";
 
 function drawParabola() {
   const id = useBoardStore.getState().beginStroke({ x: 0, y: 95 });
-  for (let i = 1; i < 16; i++) {
-    const x = i * 12;
-    const y = 0.008 * (x - 90) ** 2 + 30;
+  for (let i = 1; i < 28; i++) {
+    const x = i * 10;
+    const y = 0.0035 * (x - 140) ** 2 + 36;
     useBoardStore.getState().extendStroke(id, { x, y });
   }
   useBoardStore.getState().endStroke(id);
@@ -53,7 +53,31 @@ describe("board store", () => {
   it("scopes recognition to the active topic", () => {
     useBoardStore.getState().setTopicId("chem.10.chemical-reactions.balancing");
     drawParabola();
-    expect(useBoardStore.getState().chips).toHaveLength(0);
+    const chips = useBoardStore.getState().chips;
+    // Chem topic allowlist: either no chip, or balancer-only / pick for balancer.
+    for (const chip of chips) {
+      expect(chip.intent).toBe("balancer");
+    }
+  });
+
+  it("lets the learner correct a wrong chip after writing", () => {
+    drawParabola();
+    const chip = useBoardStore.getState().chips[0];
+    expect(chip).toBeTruthy();
+    useBoardStore.getState().correctChip(chip!.id, "balancer");
+    const fixed = useBoardStore.getState().chips[0]!;
+    expect(fixed.intent).toBe("balancer");
+    expect(fixed.needsPick).toBe(false);
+    useBoardStore.getState().confirmChip(fixed.id);
+    expect(useBoardStore.getState().widgets[0]?.kind).toBe("balancer");
+  });
+
+  it("cycles chip intent with Wrong?", () => {
+    drawParabola();
+    const chip = useBoardStore.getState().chips[0]!;
+    useBoardStore.getState().cycleChip(chip.id);
+    const cycled = useBoardStore.getState().chips[0]!;
+    expect(cycled.intent).not.toBe(chip.intent);
   });
 
   it("selects, moves, and deletes strokes", () => {

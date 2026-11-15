@@ -3,9 +3,13 @@
 import { create } from "zustand";
 import {
   allowedIntentsForTopic,
+  clusterNearbyStrokes,
+  correctChipIntent,
+  cycleChipIntent,
   mergePendingChips,
   pointNearStroke,
-  recogniseFromStroke,
+  recogniseFromStrokes,
+  type ChipIntent,
 } from "./recognise";
 import type {
   BoardState,
@@ -39,6 +43,10 @@ interface BoardStore extends BoardState {
   clearBoard: () => void;
   confirmChip: (chipId: string) => void;
   dismissChip: (chipId: string) => void;
+  /** One-tap fix when recognition picked the wrong intent. */
+  correctChip: (chipId: string, intent: ChipIntent) => void;
+  /** Cycle through allowed alternate intents for a pending chip. */
+  cycleChip: (chipId: string) => void;
   insertTemplate: (kind: BoardWidgetInstance["kind"]) => void;
 }
 
@@ -119,7 +127,8 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
       return;
     }
     const allowed = allowedIntentsForTopic(get().topicId);
-    const chip = recogniseFromStroke(stroke, allowed);
+    const cluster = clusterNearbyStrokes(get().strokes, id);
+    const chip = recogniseFromStrokes(cluster, allowed);
     if (!chip) {
       set({ timeline: events });
       return;
@@ -238,6 +247,28 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
     set((state) => ({
       chips: state.chips.filter((item) => item.id !== chipId),
     })),
+  correctChip: (chipId, intent) => {
+    const chip = get().chips.find((item) => item.id === chipId);
+    if (!chip) return;
+    const allowed = allowedIntentsForTopic(get().topicId);
+    const next = correctChipIntent(chip, intent, allowed);
+    if (!next) return;
+    set((state) => ({
+      chips: state.chips.map((item) => (item.id === chipId ? next : item)),
+      timeline: [...state.timeline, { type: "chip", chip: next, at: Date.now() }],
+    }));
+  },
+  cycleChip: (chipId) => {
+    const chip = get().chips.find((item) => item.id === chipId);
+    if (!chip) return;
+    const allowed = allowedIntentsForTopic(get().topicId);
+    const next = cycleChipIntent(chip, allowed);
+    if (!next) return;
+    set((state) => ({
+      chips: state.chips.map((item) => (item.id === chipId ? next : item)),
+      timeline: [...state.timeline, { type: "chip", chip: next, at: Date.now() }],
+    }));
+  },
   insertTemplate: (kind) => {
     const titles: Record<BoardWidgetInstance["kind"], string> = {
       graph: "Function graph",
