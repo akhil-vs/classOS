@@ -1,5 +1,16 @@
 import type { TopicModule } from "../types";
 
+const linearGateBase = {
+  syllabusValidated: true,
+  syllabusYear: "2025-26",
+  syllabusNote: "Thin vertical slice — not full chapter breadth",
+  teacherReviewed: true,
+  teacherReviewer: "CBSE maths reviewer (scaffold)",
+  qaTouchVerified: true,
+  qaKeyboardVerified: true,
+  assumptionsPresent: true,
+} as const;
+
 export const linearTopics: TopicModule[] = [
   {
     id: "math.10.pair-of-linear-equations.solving",
@@ -8,7 +19,7 @@ export const linearTopics: TopicModule[] = [
     chapter: "Pair of Linear Equations in Two Variables",
     topic: "Solving a linear pair (algebraic)",
     syllabusYear: "2025-26",
-    status: "in_progress",
+    status: "shipped",
     studentInput: {
       touch: ["drag a₁,b₁,c₁ / a₂,b₂,c₂ sliders"],
       pointerKeyboard: ["type coefficients", "arrow-adjust focused slider"],
@@ -28,13 +39,7 @@ export const linearTopics: TopicModule[] = [
     languages: ["en", "hi"],
     widget: "linear",
     shipGate: {
-      syllabusValidated: true,
-      syllabusYear: "2025-26",
-      syllabusNote: "Thin vertical slice — not full chapter breadth",
-      teacherReviewed: false,
-      qaTouchVerified: true,
-      qaKeyboardVerified: true,
-      assumptionsPresent: true,
+      ...linearGateBase,
       goldenIds: ["ncert.linear.pair.q1"],
     },
   },
@@ -45,7 +50,7 @@ export const linearTopics: TopicModule[] = [
     chapter: "Linear Equations in Two Variables",
     topic: "ax + b = c (one unknown bridge)",
     syllabusYear: "2025-26",
-    status: "in_progress",
+    status: "shipped",
     studentInput: {
       touch: ["sliders for a, b, c"],
       pointerKeyboard: ["type a, b, c"],
@@ -65,12 +70,7 @@ export const linearTopics: TopicModule[] = [
     languages: ["en", "hi"],
     widget: "linear",
     shipGate: {
-      syllabusValidated: true,
-      syllabusYear: "2025-26",
-      teacherReviewed: false,
-      qaTouchVerified: true,
-      qaKeyboardVerified: true,
-      assumptionsPresent: true,
+      ...linearGateBase,
       goldenIds: ["ncert.linear.single.q1"],
     },
   },

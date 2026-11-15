@@ -41,8 +41,9 @@ export default function HomePage() {
           maxWidth: 520,
         }}
       >
-        Phase 4 learner pilot — Learn and personal board on phones and laptops,
-        focused on shipped Quadratic Equations and Chemical Reactions.
+        Learner + classroom pilots are live on phones and laptops. Shipped
+        Quadratic and Reactions stay the pilot path; linear, geometry, and Class
+        11 complex modulus are available under Browse.
       </p>
 
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -65,6 +66,12 @@ export default function HomePage() {
         </Link>
         <Link href="/school" style={secondaryBtn}>
           School pilot
+        </Link>
+        <Link href="/pilot" style={secondaryBtn}>
+          Pilot notes
+        </Link>
+        <Link href="/settings" style={secondaryBtn}>
+          Settings
         </Link>
       </div>
 

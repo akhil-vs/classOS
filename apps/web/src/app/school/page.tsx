@@ -27,9 +27,12 @@ export default function SchoolPage() {
         <li>Note recognition errors and unused chips for breadth prioritisation.</li>
       </ol>
 
-      <p style={{ margin: "20px 0" }}>
+      <p style={{ margin: "20px 0", display: "flex", gap: 16, flexWrap: "wrap" }}>
         <Link href="/class/board" style={{ color: "var(--co-accent)" }}>
           Open classroom board →
+        </Link>
+        <Link href="/pilot" style={{ color: "var(--co-accent)" }}>
+          Capture pilot notes →
         </Link>
       </p>
 

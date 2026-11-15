@@ -34,3 +34,10 @@ export {
   topicAssumptions,
   topicUsesUnits,
 } from "./pilot";
+export {
+  createPilotNote,
+  PILOT_NOTE_CATEGORIES,
+  PILOT_NOTES_STORAGE_KEY,
+  type PilotNote,
+  type PilotNoteCategory,
+} from "./pilotNotes";

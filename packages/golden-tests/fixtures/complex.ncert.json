@@ -1,0 +1,9 @@
+[
+  {
+    "id": "ncert.complex.modulus.3-4-5",
+    "source": "Class 11 Complex Numbers — |3+4i|=5",
+    "topicId": "math.11.complex-numbers.modulus",
+    "input": { "a": 3, "b": 4 },
+    "expected": { "modulus": 5, "conjugate": "3 − 4i" }
+  }
+]

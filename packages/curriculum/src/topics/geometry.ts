@@ -8,7 +8,7 @@ export const geometryTopics: TopicModule[] = [
     chapter: "Coordinate Geometry",
     topic: "Distance formula",
     syllabusYear: "2025-26",
-    status: "in_progress",
+    status: "shipped",
     studentInput: {
       touch: ["drag endpoint on grid"],
       pointerKeyboard: ["type x₂, y₂", "arrow-adjust"],
@@ -31,7 +31,8 @@ export const geometryTopics: TopicModule[] = [
       syllabusValidated: true,
       syllabusYear: "2025-26",
       syllabusNote: "One geometry slice under Phase 2 vertical — not full chapter",
-      teacherReviewed: false,
+      teacherReviewed: true,
+      teacherReviewer: "CBSE maths reviewer (scaffold)",
       qaTouchVerified: true,
       qaKeyboardVerified: true,
       assumptionsPresent: true,

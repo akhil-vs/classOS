@@ -1,5 +1,6 @@
 import { inventory, listInventoryChapters } from "./inventory";
 import { evaluateShipGate } from "./shipGate";
+import { complexTopics } from "./topics/complex";
 import { geometryTopics } from "./topics/geometry";
 import { linearTopics } from "./topics/linear";
 import { quadraticTopics } from "./topics/quadratic";
@@ -16,6 +17,7 @@ const ALL_TOPICS: TopicModule[] = [
   ...quadraticTopics,
   ...linearTopics,
   ...geometryTopics,
+  ...complexTopics,
   ...reactionTopics,
   ...stubTopics,
 ];

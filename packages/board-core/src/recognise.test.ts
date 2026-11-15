@@ -57,6 +57,12 @@ describe("recogniseFromStroke", () => {
     expect(
       allowedIntentsForTopic("chem.10.chemical-reactions.balancing"),
     ).toEqual(["balancer"]);
+    expect(
+      allowedIntentsForTopic("chem.10.chemical-reactions.types"),
+    ).toEqual(["reaction-types"]);
+    expect(
+      allowedIntentsForTopic("math.11.complex-numbers.modulus"),
+    ).toEqual(["complex"]);
     expect(allowedIntentsForTopic(undefined)).toEqual([
       "quadratic",
       "balancer",

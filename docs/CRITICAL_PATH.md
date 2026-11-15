@@ -16,7 +16,7 @@ Implement in this order. Do not pull deferred work forward.
 | 4 | **Phase 4 — learner pilot** | Phones/laptops (360px / laptop) on Learn + personal board; shipped Quadratic + Reactions only | Watch chip noise, unused templates, units vs assumptions, offline banner. Before any classroom infra. |
 | 5 | **Phase 5 — classroom pack** | Harden local-first `/class/board` + `/join` (Predict votes, session lifecycle, presence) | After learner pilot. Reuses board-core; no cloud sync. |
 | 6 | **Phase 6 — school pilot** | Small school pilot; `/school` device-local summaries | After Phase 5. School-scoped only. |
-| 7 → 10 | **Breadth** | Class 11–12 maths → physics → chem → 6–8 | Only after pilots show what teachers actually use. |
+| 7 → 10 | **Breadth** | Class 11–12 maths → physics → chem → 6–8 | Phase 7 started (complex modulus). Expand from `/pilot` notes — not full inventory dumps. |
 
 ## Defer / ongoing (do not pull forward)
 

@@ -158,5 +158,6 @@ Learn, personal blackboard, and classroom board architecture: [`architecture/web
 4. ~~Learner pilot (Phase 4) — Learn + personal board at 360px/laptop on Quadratic + Reactions; chip noise, templates, units/assumptions, offline banner.~~  
 5. ~~Harden local-first `/join` classroom pack (Phase 5).~~  
 6. ~~Small school pilot surface (Phase 6) — `/school` local summaries.~~  
-7. Breadth only after pilot notes: Class 11–12 maths → physics → chem → 6–8.  
-8. Do **not** pull forward: Class 9–10 maths inventory breadth, full physics sims, cloud sync, Devanagari ink, free-hand circuits/organics, marketplace, panel matrix, onboarding.
+7. ~~Ship linear + geometry + reaction types; `/settings` persistence; `/pilot` notes; Phase 7 Class 11 complex modulus thin vertical.~~  
+8. Continue breadth from pilot notes: more Class 11–12 maths → physics → chem → 6–8.  
+9. Do **not** pull forward: Class 9–10 maths inventory breadth, full physics sims, cloud sync, Devanagari ink, free-hand circuits/organics, marketplace, panel matrix, onboarding.

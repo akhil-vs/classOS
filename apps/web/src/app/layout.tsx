@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { OfflineBanner } from "../components/OfflineBanner";
+import { PreferencesBootstrap } from "../components/PreferencesBootstrap";
 import { ServiceWorkerRegister } from "../components/ServiceWorkerRegister";
 import "@classos/ui/tokens.css";
 import "./globals.css";
@@ -30,6 +31,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <PreferencesBootstrap />
         <ServiceWorkerRegister />
         <OfflineBanner />
         {children}

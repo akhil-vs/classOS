@@ -29,6 +29,14 @@ export {
   type TriangleAngles,
 } from "./geometry";
 export {
+  complexModulus,
+  explainComplexTemplate,
+  formatComplex,
+  type ComplexInput,
+  type ComplexModulusResult,
+  type ComplexNumber,
+} from "./complex";
+export {
   linearAnswerEquivalent,
   quadraticRootsEquivalent,
   type EquivalenceResult,

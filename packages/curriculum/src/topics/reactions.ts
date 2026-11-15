@@ -59,13 +59,14 @@ export const reactionTopics: TopicModule[] = [
     chapter: "Chemical Reactions and Equations",
     topic: "Types of chemical reactions",
     syllabusYear: "2025-26",
-    status: "in_progress",
+    status: "shipped",
     studentInput: {
-      touch: ["pick reaction template", "scrub particle animation"],
-      pointerKeyboard: ["select type from list", "space to play/pause"],
+      touch: ["pick reaction template", "tap predict type chips"],
+      pointerKeyboard: ["select type from list", "type formulas"],
       boardTriggers: ["combination", "decomposition", "displacement"],
     },
-    boardResponse: "Beaker observation linked to particle view and balanced equation",
+    boardResponse:
+      "Verified type label linked to balanced equation; colour-only demos refused",
     understandingGoal: "Classify by what happens to reactants, not by colour alone",
     modes: ["see", "predict", "build", "derive", "solve", "check"],
     misconceptions: [
@@ -74,14 +75,23 @@ export const reactionTopics: TopicModule[] = [
         demo: "Contrast dissolving copper sulphate with burning magnesium",
       },
     ],
-    engines: ["balancer", "molecule"],
-    goldenTests: ["ncert.chem10.reactions.balance.water"],
+    engines: ["balancer", "classifier"],
+    goldenTests: [
+      "ncert.chem10.reactions.types.combination.water",
+      "ncert.chem10.reactions.types.decomposition.limestone",
+      "ncert.chem10.reactions.types.displacement.zinc",
+      "ncert.chem10.reactions.types.double.bacl2",
+    ],
     languages: ["en", "hi"],
-    widget: "balancer",
+    widget: "reaction-types",
     shipGate: {
       ...chemGateBase,
-      teacherReviewed: false,
-      goldenIds: ["ncert.chem10.reactions.balance.water"],
+      goldenIds: [
+        "ncert.chem10.reactions.types.combination.water",
+        "ncert.chem10.reactions.types.decomposition.limestone",
+        "ncert.chem10.reactions.types.displacement.zinc",
+        "ncert.chem10.reactions.types.double.bacl2",
+      ],
     },
   },
 ];
