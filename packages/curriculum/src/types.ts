@@ -57,7 +57,9 @@ export interface TopicModule {
     | "quadratic"
     | "balancer"
     | "linear"
-    | "geometry";
+    | "geometry"
+    | "reaction-types"
+    | "complex";
   shipGate?: ShipGate;
 }
 

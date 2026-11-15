@@ -2,7 +2,7 @@ import type { Point, Stroke, SuggestionChip } from "./types";
 
 export type ChipIntent = SuggestionChip["intent"];
 
-/** Phase 4 learner pilot: only shipped Quadratic + Reactions intents by default. */
+/** Phase 4 learner pilot: shipped Quadratic + Reactions intents by default. */
 export const PILOT_CHIP_INTENTS: ChipIntent[] = ["quadratic", "balancer"];
 
 const MAX_PENDING_CHIPS = 1;
@@ -18,6 +18,9 @@ function uid(prefix: string) {
 export function allowedIntentsForTopic(topicId?: string): ChipIntent[] {
   if (!topicId) return [...PILOT_CHIP_INTENTS];
   if (topicId.includes("quadratic")) return ["quadratic"];
+  if (topicId.includes("chemical-reactions.types") || topicId.includes("reactions.types")) {
+    return ["reaction-types"];
+  }
   if (topicId.includes("chemical-reactions") || topicId.includes("reactions")) {
     return ["balancer"];
   }
@@ -25,6 +28,7 @@ export function allowedIntentsForTopic(topicId?: string): ChipIntent[] {
   if (topicId.includes("geometry") || topicId.includes("triangles")) {
     return ["geometry"];
   }
+  if (topicId.includes("complex")) return ["complex"];
   if (topicId.includes("inclined") || topicId.includes("scene")) return ["scene"];
   if (topicId.includes("molecule")) return ["molecule"];
   return [...PILOT_CHIP_INTENTS];

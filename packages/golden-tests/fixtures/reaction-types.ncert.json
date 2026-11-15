@@ -1,0 +1,33 @@
+[
+  {
+    "id": "ncert.chem10.reactions.types.combination.water",
+    "source": "NCERT Class 10 — combination (water)",
+    "topicId": "chem.10.chemical-reactions.types",
+    "input": { "reactants": ["H2", "O2"], "products": ["H2O"] },
+    "expected": { "type": "combination" }
+  },
+  {
+    "id": "ncert.chem10.reactions.types.decomposition.limestone",
+    "source": "NCERT Class 10 — decomposition (CaCO3)",
+    "topicId": "chem.10.chemical-reactions.types",
+    "input": { "reactants": ["CaCO3"], "products": ["CaO", "CO2"] },
+    "expected": { "type": "decomposition" }
+  },
+  {
+    "id": "ncert.chem10.reactions.types.displacement.zinc",
+    "source": "NCERT Class 10 — displacement (Zn + CuSO4)",
+    "topicId": "chem.10.chemical-reactions.types",
+    "input": { "reactants": ["Zn", "CuSO4"], "products": ["ZnSO4", "Cu"] },
+    "expected": { "type": "displacement" }
+  },
+  {
+    "id": "ncert.chem10.reactions.types.double.bacl2",
+    "source": "NCERT Class 10 — double displacement",
+    "topicId": "chem.10.chemical-reactions.types",
+    "input": {
+      "reactants": ["Na2SO4", "BaCl2"],
+      "products": ["BaSO4", "NaCl"]
+    },
+    "expected": { "type": "double_displacement" }
+  }
+]

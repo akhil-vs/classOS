@@ -11,15 +11,27 @@ describe("ship gate", () => {
     expect(assertShippedConsistent(topic!)).toBeNull();
   });
 
-  it("lets shipped balancer topic pass", () => {
-    const topic = getTopicById("chem.10.chemical-reactions.balancing");
-    expect(evaluateShipGate(topic!).canShip).toBe(true);
+  it("lets shipped balancer and reaction-types topics pass", () => {
+    expect(
+      evaluateShipGate(getTopicById("chem.10.chemical-reactions.balancing")!)
+        .canShip,
+    ).toBe(true);
+    const types = getTopicById("chem.10.chemical-reactions.types")!;
+    expect(types.status).toBe("shipped");
+    expect(evaluateShipGate(types).canShip).toBe(true);
   });
 
-  it("keeps reaction types blocked until teacher review", () => {
-    const topic = getTopicById("chem.10.chemical-reactions.types");
-    expect(topic?.status).toBe("in_progress");
-    expect(evaluateShipGate(topic!).canShip).toBe(false);
+  it("ships linear, geometry, and Class 11 complex verticals", () => {
+    for (const id of [
+      "math.10.pair-of-linear-equations.solving",
+      "math.9.linear-equations.one-variable",
+      "math.10.coordinate-geometry.distance",
+      "math.11.complex-numbers.modulus",
+    ]) {
+      const topic = getTopicById(id)!;
+      expect(topic.status).toBe("shipped");
+      expect(evaluateShipGate(topic).canShip).toBe(true);
+    }
   });
 
   it("never marks shipped topics without a consistent gate", () => {

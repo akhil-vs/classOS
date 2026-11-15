@@ -2,12 +2,14 @@
 
 import type { BoardWidgetInstance } from "@classos/board-core";
 import { BalancerLab } from "./BalancerLab";
+import { ComplexLab } from "./ComplexLab";
 import { FunctionGraph } from "./FunctionGraph";
 import { GeometryLab } from "./GeometryLab";
 import { InclinedPlane } from "./InclinedPlane";
 import { LinearLab } from "./LinearLab";
 import { MoleculeView } from "./MoleculeView";
 import { QuadraticLab } from "./QuadraticLab";
+import { ReactionTypesLab } from "./ReactionTypesLab";
 
 export function WidgetHost({
   kind,
@@ -31,6 +33,10 @@ export function WidgetHost({
       return <GeometryLab />;
     case "balancer":
       return <BalancerLab onExplain={onExplain} />;
+    case "reaction-types":
+      return <ReactionTypesLab onExplain={onExplain} />;
+    case "complex":
+      return <ComplexLab onExplain={onExplain} />;
     default:
       return <div>Unknown widget: {kind}</div>;
   }

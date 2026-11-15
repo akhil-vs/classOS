@@ -245,8 +245,10 @@ export const useBoardStore = create<BoardStore>((set, get) => ({
       molecule: "Molecule view",
       quadratic: "Quadratic lab",
       balancer: "Equation balancer",
+      "reaction-types": "Reaction types",
       linear: "Linear equations",
       geometry: "Geometry slice",
+      complex: "Complex numbers",
     };
     const widget: BoardWidgetInstance = {
       id: uid("widget"),

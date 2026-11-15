@@ -12,8 +12,10 @@ export interface TemplateSpec {
 export const ALL_TEMPLATES: TemplateSpec[] = [
   { kind: "quadratic", label: "Quadratic", pilotPrimary: true },
   { kind: "balancer", label: "Balance", pilotPrimary: true },
+  { kind: "reaction-types", label: "Reaction types", pilotPrimary: false },
   { kind: "linear", label: "Linear", pilotPrimary: false },
   { kind: "geometry", label: "Geometry", pilotPrimary: false },
+  { kind: "complex", label: "Complex", pilotPrimary: false },
   { kind: "graph", label: "Graph", pilotPrimary: false },
   { kind: "scene", label: "Scene", pilotPrimary: false },
   { kind: "molecule", label: "Molecule", pilotPrimary: false },

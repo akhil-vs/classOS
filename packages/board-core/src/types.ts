@@ -14,17 +14,28 @@ export interface Stroke {
   width: number;
 }
 
+export type WidgetKind =
+  | "graph"
+  | "scene"
+  | "molecule"
+  | "quadratic"
+  | "balancer"
+  | "linear"
+  | "geometry"
+  | "reaction-types"
+  | "complex";
+
 export interface SuggestionChip {
   id: string;
   label: string;
-  intent: "quadratic" | "balancer" | "graph" | "scene" | "molecule" | "linear" | "geometry";
+  intent: WidgetKind;
   x: number;
   y: number;
 }
 
 export interface BoardWidgetInstance {
   id: string;
-  kind: "graph" | "scene" | "molecule" | "quadratic" | "balancer" | "linear" | "geometry";
+  kind: WidgetKind;
   title: string;
   /** Top-left offset on the board overlay (select tool can move widgets). */
   x?: number;

@@ -37,7 +37,8 @@ Open [http://localhost:3000](http://localhost:3000).
 | `/class/board` | Classroom live pack (local-first Predict + session lifecycle) |
 | `/join/[code]` | Student presence + Predict vote |
 | `/school` | School pilot checklist + local session summaries |
-| `/settings` | Language / input prefs stub |
+| `/pilot` | Device-local Phase 4–6 pilot notes |
+| `/settings` | Language / input / text size (localStorage) |
 | `/author` | Internal manifest + ship-gate list |
 
 ```bash

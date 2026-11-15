@@ -28,10 +28,14 @@ export function topicAssumptions(topic?: TopicModule): string {
       return "Real coefficients · complex roots withheld when D < 0 · a, b, c are dimensionless";
     case "balancer":
       return "Closed system · atoms conserved · subscripts fixed (coefficients only)";
+    case "reaction-types":
+      return "Classify by reactant→product pattern · colour change alone is not enough";
     case "linear":
       return "Simultaneous linear equations over the reals · unique / none / infinite shown honestly";
     case "geometry":
       return "Euclidean plane figures · lengths in the same unit family";
+    case "complex":
+      return "z = a + bi over the reals · |z| = √(a² + b²) · conjugate flips Im(z)";
     case "scene":
       return "Textbook idealisations — see live scene flags (friction, point mass, g)";
     case "molecule":
@@ -54,8 +58,20 @@ export function predictOptionsForTopic(topic: TopicModule): string[] {
   if (topic.widget === "balancer") {
     return ["Already balanced", "Needs coefficients", "Impossible / refuse", "Not sure"];
   }
+  if (topic.widget === "reaction-types") {
+    return [
+      "Combination",
+      "Decomposition",
+      "Displacement",
+      "Double displacement",
+      "Not a reaction",
+    ];
+  }
   if (topic.widget === "linear") {
     return ["Unique solution", "No solution", "Infinite solutions", "Not sure"];
+  }
+  if (topic.widget === "complex") {
+    return ["|z| = √(a²+b²)", "|z| = a + b", "|z| = a − b", "Not sure"];
   }
   return ["Likely", "Unlikely", "Not sure"];
 }
