@@ -1,12 +1,26 @@
 import { evaluateShipGate, getAllTopics } from "@classos/curriculum";
 import { BrandMark } from "@classos/ui";
 import Link from "next/link";
+import { AuthBar } from "../../components/AuthBar";
+import { requirePageSession } from "../../lib/auth";
 
-export default function AuthorPage() {
+export default async function AuthorPage() {
+  await requirePageSession("author", { next: "/author" });
   const topics = getAllTopics();
   return (
     <main style={{ maxWidth: 900, margin: "0 auto", padding: "24px 16px" }}>
-      <BrandMark />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+      >
+        <BrandMark />
+        <AuthBar />
+      </div>
       <h1
         style={{
           fontFamily: "var(--co-font-brand)",
@@ -16,8 +30,8 @@ export default function AuthorPage() {
         Author (internal)
       </h1>
       <p style={{ color: "var(--co-ink-muted)" }}>
-        Chapter manifest + ship-gate checklist. A topic may show{" "}
-        <code>shipped</code> only when goldens, syllabus validation, teacher
+        Chapter manifest + ship-gate checklist. Platform author only. A topic may
+        show <code>shipped</code> only when goldens, syllabus validation, teacher
         review, and input QA flags are complete.
       </p>
       <ul style={{ listStyle: "none", padding: 0, display: "grid", gap: 10 }}>

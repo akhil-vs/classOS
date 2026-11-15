@@ -3,6 +3,7 @@ import path from "node:path";
 
 const nextConfig: NextConfig = {
   transpilePackages: [
+    "@classos/auth",
     "@classos/board-core",
     "@classos/class-live",
     "@classos/curriculum",

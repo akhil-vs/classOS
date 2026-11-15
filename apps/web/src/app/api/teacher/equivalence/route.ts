@@ -3,12 +3,16 @@ import {
   quadraticRootsEquivalent,
 } from "@classos/engines-math";
 import { NextResponse } from "next/server";
+import { requireApiCapability } from "../../../../lib/auth";
 
 /**
  * Teacher-private equivalence — not for student scoreboards.
  * Results must stay in the teacher session (DPDP: learner work private).
  */
 export async function POST(request: Request) {
+  const auth = requireApiCapability(request, "teacher_equivalence");
+  if (!auth.ok) return auth.response;
+
   const body = (await request.json()) as {
     kind?: "linear" | "quadratic";
     problem?: Record<string, number>;

@@ -2,10 +2,14 @@ import { getPilotTopics } from "@classos/curriculum";
 import { BrandMark } from "@classos/ui";
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { AuthBar } from "../components/AuthBar";
+import { readSessionFromCookies } from "../lib/auth";
 
-export default function HomePage() {
+export default async function HomePage() {
   const pilot = getPilotTopics();
   const continueTopic = pilot[0];
+  const session = await readSessionFromCookies();
+  const role = session?.user.role;
 
   return (
     <main
@@ -19,7 +23,18 @@ export default function HomePage() {
         margin: "0 auto",
       }}
     >
-      <BrandMark />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+          alignItems: "center",
+        }}
+      >
+        <BrandMark />
+        <AuthBar />
+      </div>
       <h1
         style={{
           margin: 0,
@@ -41,30 +56,50 @@ export default function HomePage() {
           maxWidth: 520,
         }}
       >
-        Phase 4 learner pilot — Learn and personal board on phones and laptops,
-        focused on shipped Quadratic Equations and Chemical Reactions.
+        {role === "teacher"
+          ? "Open the classroom board for today’s section, or preview Learn topics."
+          : role === "school_admin"
+            ? "Review school session summaries, or browse the pilot curriculum."
+            : "Learn and personal board on phones and laptops — Quadratic Equations and Chemical Reactions."}
       </p>
 
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-        {continueTopic && (
+        {role === "teacher" ? (
+          <Link href="/class/board" style={primaryBtn}>
+            Open classroom
+          </Link>
+        ) : role === "school_admin" ? (
+          <Link href="/school" style={primaryBtn}>
+            School admin
+          </Link>
+        ) : continueTopic ? (
           <Link href={`/learn/${continueTopic.id}`} style={primaryBtn}>
             Continue · {continueTopic.topic}
           </Link>
-        )}
+        ) : null}
         <Link href="/board" style={secondaryBtn}>
           Personal board
-        </Link>
-        <Link href="/progress" style={secondaryBtn}>
-          Progress
         </Link>
         <Link href="/browse" style={secondaryBtn}>
           Browse
         </Link>
-        <Link href="/class/board" style={secondaryBtn}>
-          Classroom
-        </Link>
-        <Link href="/school" style={secondaryBtn}>
-          School pilot
+        {role === "student" && (
+          <Link href="/progress" style={secondaryBtn}>
+            Progress
+          </Link>
+        )}
+        {(role === "teacher" || role === "school_admin") && (
+          <Link href="/school" style={secondaryBtn}>
+            School
+          </Link>
+        )}
+        {!session && (
+          <Link href="/login" style={secondaryBtn}>
+            Sign in
+          </Link>
+        )}
+        <Link href="/settings" style={secondaryBtn}>
+          Settings
         </Link>
       </div>
 

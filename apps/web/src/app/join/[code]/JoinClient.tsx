@@ -3,8 +3,13 @@
 import type { StudentJoinSnapshot } from "@classos/class-live";
 import { useCallback, useEffect, useState } from "react";
 
-export function JoinClient({ code }: { code: string }) {
-  const [name, setName] = useState("");
+export function JoinClient({
+  code,
+  studentName,
+}: {
+  code: string;
+  studentName: string;
+}) {
   const [choice, setChoice] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [session, setSession] = useState<StudentJoinSnapshot | null>(null);
@@ -34,24 +39,23 @@ export function JoinClient({ code }: { code: string }) {
   }, [loadSession]);
 
   useEffect(() => {
-    if (!joined || !name.trim() || !session || session.status !== "live") return;
+    if (!joined || !session || session.status !== "live") return;
     const beat = window.setInterval(() => {
       void fetch(`/api/join/${code}/presence`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentLabel: name }),
+        body: JSON.stringify({}),
       });
     }, 10_000);
     return () => window.clearInterval(beat);
-  }, [joined, name, session, code]);
+  }, [joined, session, code]);
 
   async function joinPresence() {
-    if (!name.trim()) return;
     setMessage(null);
     const response = await fetch(`/api/join/${code}/presence`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ studentLabel: name }),
+      body: JSON.stringify({}),
     });
     const data = (await response.json()) as {
       error?: string;
@@ -63,16 +67,16 @@ export function JoinClient({ code }: { code: string }) {
     }
     setJoined(true);
     if (data.session) setSession(data.session);
-    setMessage("Joined on this device. Waiting for Predict…");
+    setMessage("Joined. Waiting for Predict…");
   }
 
   async function vote() {
-    if (!name.trim() || !choice) return;
+    if (!choice) return;
     setMessage(null);
     const response = await fetch(`/api/join/${code}/vote`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ studentLabel: name, choice }),
+      body: JSON.stringify({ choice }),
     });
     const data = (await response.json()) as {
       error?: string;
@@ -84,7 +88,7 @@ export function JoinClient({ code }: { code: string }) {
     }
     setJoined(true);
     if (data.session) setSession(data.session);
-    setMessage("Vote recorded on the teacher device (local-first).");
+    setMessage("Vote recorded on the teacher device.");
   }
 
   if (loadError) {
@@ -96,7 +100,11 @@ export function JoinClient({ code }: { code: string }) {
   }
 
   if (!session) {
-    return <div style={{ color: "var(--co-ink-muted)", fontSize: 14 }}>Looking up class…</div>;
+    return (
+      <div style={{ color: "var(--co-ink-muted)", fontSize: 14 }}>
+        Looking up class…
+      </div>
+    );
   }
 
   const ended = session.status === "ended";
@@ -109,6 +117,8 @@ export function JoinClient({ code }: { code: string }) {
       <div style={{ color: "var(--co-ink-muted)", fontSize: 13, lineHeight: 1.45 }}>
         {session.teacherLabel}
         {" · "}
+        Joining as <strong style={{ color: "var(--co-ink)" }}>{studentName}</strong>
+        {" · "}
         {ended
           ? "Class ended"
           : session.predictOpen
@@ -118,24 +128,8 @@ export function JoinClient({ code }: { code: string }) {
         {session.joinedCount} joined
       </div>
 
-      <label style={{ display: "grid", gap: 6, fontSize: 13 }}>
-        Your name (local only)
-        <input
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          disabled={ended}
-          style={field}
-          autoComplete="nickname"
-        />
-      </label>
-
       {!joined && !ended && (
-        <button
-          type="button"
-          disabled={!name.trim()}
-          onClick={joinPresence}
-          style={secondary}
-        >
+        <button type="button" onClick={joinPresence} style={secondary}>
           Join class
         </button>
       )}
@@ -171,7 +165,7 @@ export function JoinClient({ code }: { code: string }) {
 
       <button
         type="button"
-        disabled={!canVote || !name.trim() || !choice}
+        disabled={!canVote || !choice}
         onClick={vote}
         style={{
           minHeight: "var(--co-hit)",
@@ -179,7 +173,7 @@ export function JoinClient({ code }: { code: string }) {
           border: "1px solid var(--co-accent)",
           background: "rgba(198, 242, 109, 0.12)",
           color: "var(--co-accent)",
-          cursor: canVote && name.trim() && choice ? "pointer" : "not-allowed",
+          cursor: canVote && choice ? "pointer" : "not-allowed",
         }}
       >
         Send Predict vote
@@ -191,15 +185,6 @@ export function JoinClient({ code }: { code: string }) {
     </div>
   );
 }
-
-const field = {
-  minHeight: "var(--co-hit)",
-  borderRadius: 10,
-  border: "1px solid var(--co-border)",
-  background: "var(--co-bg-elevated)",
-  color: "var(--co-ink)",
-  padding: "0 12px",
-} as const;
 
 const secondary = {
   minHeight: "var(--co-hit)",

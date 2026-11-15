@@ -1,9 +1,12 @@
 import { BrandMark } from "@classos/ui";
 import Link from "next/link";
+import { AuthBar } from "../../../components/AuthBar";
+import { requirePageSession } from "../../../lib/auth";
 import { ClassBoardClient } from "./ClassBoardClient";
 
-/** Phase 5 — hardened local-first classroom board after learner pilot. */
-export default function ClassBoardPage() {
+/** Phase 5 classroom board — LMS L0: teachers only. */
+export default async function ClassBoardPage() {
+  await requirePageSession("class_live", { next: "/class/board" });
   return (
     <main>
       <div
@@ -18,13 +21,14 @@ export default function ClassBoardPage() {
         }}
       >
         <BrandMark compact />
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
           <Link href="/board" style={chip}>
             Personal board
           </Link>
           <Link href="/school" style={chip}>
-            School pilot
+            School
           </Link>
+          <AuthBar />
         </div>
       </div>
       <ClassBoardClient />

@@ -8,6 +8,7 @@ export {
   getLiveClassByCode,
   joinedCount,
   listSchoolSessionSummaries,
+  presenceKey,
   registerPresence,
   setPredictOpen,
   toStudentSnapshot,

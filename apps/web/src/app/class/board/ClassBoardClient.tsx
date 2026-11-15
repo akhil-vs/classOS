@@ -69,7 +69,6 @@ export function ClassBoardClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          teacherLabel: "Teacher",
           topicId: topic.id,
           predictPrompt: topic.prompt,
           predictChoices: [...topic.choices],
@@ -79,7 +78,12 @@ export function ClassBoardClient() {
         error?: string;
       };
       if (!response.ok) {
-        setError(data.error ?? "Could not start class");
+        setError(
+          data.error ??
+            (response.status === 401 || response.status === 403
+              ? "Sign in as a teacher to start class"
+              : "Could not start class"),
+        );
         return;
       }
       setSession(data);
@@ -136,9 +140,8 @@ export function ClassBoardClient() {
           Classroom board
         </h1>
         <p style={{ color: "var(--co-ink-muted)", margin: 0, lineHeight: 1.5 }}>
-          Phase 5 local-first pack: start a live session on this device, share a
-          join code, open Predict, then end class. Votes stay on the teacher
-          process — no cloud student sync.
+          Teacher-only live session on this device. Share the join code;
+          students must sign in to vote. Votes stay on the teacher process.
         </p>
         <label style={{ display: "grid", gap: 6, fontSize: 13 }}>
           Pilot topic
