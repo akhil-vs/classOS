@@ -10,9 +10,16 @@ export {
 export {
   PILOT_CHIP_INTENTS,
   allowedIntentsForTopic,
+  analyseInk,
+  clusterNearbyStrokes,
+  correctChipIntent,
+  cycleChipIntent,
+  labelForIntent,
   mergePendingChips,
   recogniseFromStroke,
+  recogniseFromStrokes,
 } from "./recognise";
+export type { ChipIntent, InkFeatures } from "./recognise";
 export { useBoardStore } from "./store";
 export {
   ALL_TEMPLATES,

@@ -20,6 +20,16 @@ export interface SuggestionChip {
   intent: "quadratic" | "balancer" | "graph" | "scene" | "molecule" | "linear" | "geometry";
   x: number;
   y: number;
+  /** 0–1 heuristic confidence; correction sets this to 1. */
+  confidence?: number;
+  /** Other allowed intents the learner can cycle to in one tap. */
+  alternatives?: Array<
+    "quadratic" | "balancer" | "graph" | "scene" | "molecule" | "linear" | "geometry"
+  >;
+  /** True when ink was ambiguous — learner should pick before confirming. */
+  needsPick?: boolean;
+  /** Strokes that produced this suggestion (cluster ids). */
+  sourceStrokeIds?: string[];
 }
 
 export interface BoardWidgetInstance {
