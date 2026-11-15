@@ -226,7 +226,7 @@ Student `/join` on phones: compact vote / answer UI only — not a second full b
 | Recognition | On-device or edge ink → latex/chem/scene chips | Confirm-to-open only |
 | Explain | Server LLM + engine tools | Never invents numeric results |
 | Data | Postgres | Users, schools, sessions, replays, reports |
-| Auth | Learner accounts + teacher/school roles | DPDP-aligned |
+| Auth | Learner accounts + teacher/school roles | DPDP-aligned — full plan: [`lms.md`](./lms.md) |
 | PWA | Installable student app | Home-screen Learn / join |
 | Tests | Vitest goldens + Playwright phone, desktop, board | Ship gate |
 
@@ -343,6 +343,7 @@ Board state is event-sourced (ink + widget ops) so personal and class replay sta
 | Milestone | Delivers |
 | --- | --- |
 | **W0 – Skeleton** | Next.js app, browse, auth stub, manifest loader |
+| **LMS L0+** | Replace auth stub with login, tenancy, RBAC — see [`lms.md`](./lms.md) |
 | **W1 – Learn + board base** | `/learn`, `/board` ink+chips+widget host, input-kit, 3 stubs, AI on/off |
 | **W2 – Maths vertical** | Class 10 Quadratics on Learn + board; CAS; golden CI; practice |
 | **W3 – Chem vertical** | Class 10 Reactions; balancer; linked views |
